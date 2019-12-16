@@ -17,7 +17,11 @@
              swipeable
             :sticky="true"
         >
-          <van-tab title="热门搜索">内容 1</van-tab>
+          <van-tab title="热门搜索">
+                <div class="banner">
+                      <img src="/static/images/banner.png" alt="">
+                </div>
+          </van-tab>
           <van-tab title="个人活动">内容 2</van-tab>
           <van-tab title="组织活动">内容 3</van-tab>
           <van-tab title="体育活动">内容 4</van-tab>
@@ -108,7 +112,7 @@ export default {
   },
   created () {
     const baseURL = process.env.API_BASE_URL
-    console.log(baseURL)
+    console.log('baseURL', baseURL)
     // let app = getApp()
     wx.login({
       success (res) {
@@ -174,5 +178,9 @@ export default {
 }
 .vant-tabs-content >>> .van-tabs__line{
   background:#fff;
+}
+.banner img{
+    width:750rpx;
+    height:418rpx;
 }
 </style>
