@@ -1,8 +1,16 @@
+<!--
+ * @Author: your name
+ * @Date: 2019-12-16 12:30:45
+ * @LastEditTime: 2019-12-17 09:14:17
+ * @LastEditors: your name
+ * @Description: In User Settings Edit
+ * @FilePath: \xianxiapai\src\components\searchBox.vue
+ -->
 <template>
   <div>
     <div class="search-box">
           <div class="search-input">
-              <input  auto-focus/>
+              <input/>
           </div>
           <div class="search-btn">
                 搜索

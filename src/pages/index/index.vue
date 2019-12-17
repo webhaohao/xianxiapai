@@ -10,17 +10,27 @@
           </div>
     </div> 
     <div class="vant-tabs-content">
-        <van-tabs 
+          <van-tabs 
             :active="active" 
-            @change="onChange" 
+            @change="onChange($event)" 
             :border="false" 
              swipeable
-            :sticky="true"
-        >
+          >
           <van-tab title="热门搜索">
                 <div class="banner">
                       <img src="/static/images/banner.png" alt="">
-                </div>
+                </div>      
+                <div class="list">
+                  <van-tabs @change="tabItemChange($event)" :active="tabs_item_active" :border="false">
+                    <van-tab title="按热度">
+                          <card></card>
+                    </van-tab>
+                    <van-tab title="按时间">内容 2</van-tab>
+                    <van-tab title="按距离">内容 3</van-tab>
+                    <van-tab title="按积分">内容 4</van-tab>
+                  </van-tabs>
+                  </div>
+                
           </van-tab>
           <van-tab title="个人活动">内容 2</van-tab>
           <van-tab title="组织活动">内容 3</van-tab>
@@ -37,6 +47,7 @@
 import card from '@/components/card'
 import tabBar from '@/components/tabBar'
 import searchBox from '@/components/searchBox'
+// import list from '@/components/list'
 export default {
   components: {
     card, tabBar, searchBox
@@ -80,7 +91,8 @@ export default {
           }
         ]
       },
-      active: 0
+      active: 0,
+      tabs_item_active: 0
     }
   },
   methods: {
@@ -108,6 +120,12 @@ export default {
         (tabbar.list[i].pagePath === pagePath) && (tabbar.list[i].selected = true)
       }
       this.tabbar = tabbar
+    },
+    onChange (event) {
+      console.log('tabParnetChange')
+    },
+    tabItemChange (event) {
+      console.log(event)
     }
   },
   created () {
@@ -182,5 +200,11 @@ export default {
 .banner img{
     width:750rpx;
     height:418rpx;
+}
+.list >>> .van-tab{
+    color:#666;
+}
+.list >>> .van-tabs__line{
+    background:#97cc92;
 }
 </style>
