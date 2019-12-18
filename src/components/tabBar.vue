@@ -14,48 +14,23 @@
   </div>
 </template>
 <script>
+import { mapGetters } from 'vuex'
 export default {
   props: {
-    tabbar: {
-      type: Object,
-      default: {
-        'backgroundColor': '#ffffff',
-        'color': '#979795',
-        'selectedColor': '#1c1c1b',
-        'list': [
-          {
-            'pagePath': '/pages/index/main',
-            'iconPath': '/static/icon/active.png',
-            'selectedIconPath': '/static/icon/active_1.png',
-            'text': '活动'
-          },
-          {
-            'pagePath': '/pages/index/main',
-            'iconPath': '/static/icon/new.png',
-            'selectedIconPath': '/static/icon/new_1.png',
-            'text': '新鲜'
-          },
-          {
-            'pagePath': '/pages/middle/middle',
-            'iconPath': '/static/icon/icon_release.png',
-            'isSpecial': true,
-            'text': '发布'
-          },
-          {
-            'pagePath': '/pages/mine/mine',
-            'iconPath': '/static/icon/money.png',
-            'selectedIconPath': '/static/icon/money_1.png',
-            'text': '兑换'
-          },
-          {
-            'pagePath': '/pages/mine/mine',
-            'iconPath': '/static/icon/heart.png',
-            'selectedIconPath': '/static/icon/heart_1.png',
-            'text': '我的'
-          }
-        ]
-      }
-    }
+  },
+  computed: {
+    ...mapGetters({
+      tabbar: 'tabbar'
+    })
+  },
+  watch: {
+  },
+  mounted () {
+    console.log('tabbar mounted')
+    this.$store.commit('editTabbar', this.$root.$mp.page.route)
+  },
+  onShow () {
+    this.$store.commit('editTabbar', this.$root.$mp.page.route)
   },
   data () {
     return {

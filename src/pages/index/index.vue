@@ -38,7 +38,7 @@
         </van-tabs>
     </div>
     <!-- <van-button>测试</van-button> -->
-    <tab-bar :tabbar = "tabbar"></tab-bar>
+    <tab-bar :tabbar="tabbar"></tab-bar>
   </div>
 </template>
 
@@ -54,43 +54,6 @@ export default {
   },
   data () {
     return {
-      tabbar: {
-        backgroundColor: '#ffffff',
-        color: '#979795',
-        selectedColor: '#1c1c1b',
-        list: [
-          {
-            'pagePath': '/pages/index/main',
-            'iconPath': '/static/icon/active.png',
-            'selectedIconPath': '/static/icon/active_1.png',
-            'text': '活动'
-          },
-          {
-            'pagePath': '/pages/news/main',
-            'iconPath': '/static/icon/new.png',
-            'selectedIconPath': '/static/icon/new_1.png',
-            'text': '新鲜'
-          },
-          {
-            'pagePath': '/pages/middle/middle',
-            'iconPath': '/static/icon/icon_release.png',
-            'isSpecial': true,
-            'text': '发布'
-          },
-          {
-            'pagePath': '/pages/mine/mine',
-            'iconPath': '/static/icon/money.png',
-            'selectedIconPath': '/static/icon/money_1.png',
-            'text': '兑换'
-          },
-          {
-            'pagePath': '/pages/mine/mine',
-            'iconPath': '/static/icon/heart.png',
-            'selectedIconPath': '/static/icon/heart_1.png',
-            'text': '我的'
-          }
-        ]
-      },
       active: 0,
       tabs_item_active: 0
     }
@@ -107,19 +70,6 @@ export default {
     clickHandle (ev) {
       console.log('clickHandle:', ev)
       // throw {message: 'custom test'}
-    },
-    editTabbar () {
-      let tabbar = this.tabbar
-      // let currentPages = getCurrentPages()
-      // let _this = currentPages[currentPages.length - 1]
-      console.log(this.$root.$mp.appOptions.path)
-      let pagePath = this.$root.$mp.appOptions.path;
-      (pagePath.indexOf('/') !== 0) && (pagePath = '/' + pagePath)
-      for (let i in tabbar.list) {
-        tabbar.list[i].selected = false;
-        (tabbar.list[i].pagePath === pagePath) && (tabbar.list[i].selected = true)
-      }
-      this.tabbar = tabbar
     },
     onChange (event) {
       console.log('tabParnetChange')
@@ -150,7 +100,6 @@ export default {
     })
   },
   mounted () {
-    this.editTabbar()
   }
 }
 </script>

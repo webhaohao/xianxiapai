@@ -2,7 +2,8 @@
   "pages": [
     "pages/index/main",
     "pages/logs/main",
-    "pages/counter/main"
+    "pages/counter/main",
+    "pages/personal/main"
   ],
   "window": {
     "backgroundTextStyle": "light",
@@ -37,7 +38,7 @@
     },
     {
       "text": "我的",
-      "pagePath": "pages/logs/main",
+      "pagePath": "pages/personal/main",
       "iconPath": "static/tabs/orders.png",
       "selectedIconPath": "static/tabs/orders-active.png"
     }
