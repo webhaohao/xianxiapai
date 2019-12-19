@@ -72,7 +72,6 @@ export default {
       // throw {message: 'custom test'}
     },
     onChange (event) {
-      console.log('tabParnetChange')
     },
     tabItemChange (event) {
       console.log(event)

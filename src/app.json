@@ -3,7 +3,8 @@
     "pages/index/main",
     "pages/logs/main",
     "pages/counter/main",
-    "pages/personal/main"
+    "pages/personal/main",
+    "pages/news/main"
   ],
   "window": {
     "backgroundTextStyle": "light",
@@ -26,7 +27,7 @@
     }, 
     {
       "text": "新鲜",
-      "pagePath": "pages/logs/main",
+      "pagePath": "pages/news/main",
       "iconPath": "static/tabs/orders.png",
       "selectedIconPath": "static/tabs/orders-active.png"
     },

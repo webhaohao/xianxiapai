@@ -22,11 +22,13 @@ export default {
     ...mapGetters({
       tabbar: 'tabbar'
     })
+    //  isIphoneX: app.includes('iphone X')
   },
   watch: {
   },
   mounted () {
     console.log('tabbar mounted')
+    console.log(this.$root)
     this.$store.commit('editTabbar', this.$root.$mp.page.route)
   },
   onShow () {
