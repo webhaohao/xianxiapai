@@ -1,3 +1,11 @@
+<!--
+ * @Author: your name
+ * @Date: 2019-12-03 18:35:21
+ * @LastEditTime : 2019-12-20 15:02:03
+ * @LastEditors  : Please set LastEditors
+ * @Description: In User Settings Edit
+ * @FilePath: \xianxiapai\src\App.vue
+ -->
 <script>
 export default {
   created () {
@@ -33,6 +41,10 @@ export default {
 </script>
 
 <style>
+/* 
+    引入阿里iconfont
+ */
+@import '../static/iconfont/iconfont.css';
 .container {
   height: 100%;
   display: flex;

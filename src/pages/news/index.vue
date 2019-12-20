@@ -167,11 +167,13 @@ export default {
     }
 }
 .list{
+    padding-bottom:108rpx;
     .group{
         display:flex;
         align-items:center;
-        padding:28rpx 16rpx;
-        
+        padding:28rpx 0rpx;
+        margin:0rpx 16rpx;
+        border-bottom:1rpx solid #f7f8fa;
         .news-thumb{
           img{
               width:313rpx;

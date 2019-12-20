@@ -1,8 +1,8 @@
 /*
  * @Author: your name
  * @Date: 2019-12-18 16:02:00
- * @LastEditTime: 2019-12-18 18:00:43
- * @LastEditors: Please set LastEditors
+ * @LastEditTime : 2019-12-20 10:23:58
+ * @LastEditors  : Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \xianxiapai\src\store\state.js
  */
@@ -28,14 +28,14 @@ const state = {
           'selected': false
         },
         {
-          'pagePath': '/pages/middle/middle',
+          'pagePath': '/pages/releaseActi/main',
           'iconPath': '/static/icon/icon_release.png',
           'isSpecial': true,
           'text': '发布',
           'selected': false
         },
         {
-          'pagePath': '/pages/mine/mine',
+          'pagePath': '/pages/exChange/main',
           'iconPath': '/static/icon/money.png',
           'selectedIconPath': '/static/icon/money_1.png',
           'text': '兑换',

@@ -1,0 +1,12 @@
+{
+  "backgroundTextStyle": "light",
+  "navigationBarBackgroundColor": "#fff",
+  "navigationBarTitleText": "兑换",
+  "navigationStyle":"default",
+  "navigationBarTextStyle": "black",
+  "usingComponents": {
+    "van-button": "/static/vant/button/index",
+    "van-tab": "/static/vant/tab/index",
+    "van-tabs": "/static/vant/tabs/index"
+  }
+}

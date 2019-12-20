@@ -1,0 +1,11 @@
+{
+  "backgroundTextStyle": "light",
+  "navigationBarBackgroundColor": "#fff",
+  "navigationBarTitleText": "发布活动",
+  "navigationStyle":"default",
+  "navigationBarTextStyle": "black",
+  "usingComponents": {
+    "van-field": "/static/vant/field/index",
+    "van-cell-group": "/static/vant/cell-group/index"
+  }
+}

@@ -18,6 +18,11 @@ import { mapGetters } from 'vuex'
 export default {
   props: {
   },
+  data () {
+    return {
+      isIphoneX: false
+    }
+  },
   computed: {
     ...mapGetters({
       tabbar: 'tabbar'
@@ -27,17 +32,14 @@ export default {
   watch: {
   },
   mounted () {
+    const res = wx.getSystemInfoSync()
+    this.isIphoneX = res.model.includes('iphone X')
     console.log('tabbar mounted')
     console.log(this.$root)
     this.$store.commit('editTabbar', this.$root.$mp.page.route)
   },
   onShow () {
     this.$store.commit('editTabbar', this.$root.$mp.page.route)
-  },
-  data () {
-    return {
-      isIphoneX: false
-    }
   }
 }
 </script>

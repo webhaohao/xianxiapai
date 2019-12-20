@@ -4,7 +4,9 @@
     "pages/logs/main",
     "pages/counter/main",
     "pages/personal/main",
-    "pages/news/main"
+    "pages/news/main",
+    "pages/exChange/main",
+    "pages/releaseActi/main"
   ],
   "window": {
     "backgroundTextStyle": "light",
@@ -33,7 +35,7 @@
     },
     {
       "text": "兑换",
-      "pagePath": "pages/logs/main",
+      "pagePath": "pages/exChange/main",
       "iconPath": "static/tabs/orders.png",
       "selectedIconPath": "static/tabs/orders-active.png"
     },
