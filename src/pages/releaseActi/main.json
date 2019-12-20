@@ -5,6 +5,7 @@
   "navigationStyle":"default",
   "navigationBarTextStyle": "black",
   "usingComponents": {
+    "van-icon": "/static/vant/icon/index",
     "van-field": "/static/vant/field/index",
     "van-cell-group": "/static/vant/cell-group/index"
   }
