@@ -7,6 +7,9 @@
   "usingComponents": {
     "van-icon": "/static/vant/icon/index",
     "van-field": "/static/vant/field/index",
-    "van-cell-group": "/static/vant/cell-group/index"
+    "van-cell-group": "/static/vant/cell-group/index",
+    "van-datetime-picker": "/static/vant/datetime-picker/index",
+    "van-popup": "/static/vant/popup/index",
+    "van-picker": "/static/vant/picker/index"
   }
 }
