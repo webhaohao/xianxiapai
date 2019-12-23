@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2019-12-20 17:26:00
- * @LastEditTime : 2019-12-22 14:54:41
+ * @LastEditTime : 2019-12-23 14:34:56
  * @LastEditors  : Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \xianxiapai\src\pages\releaseActi\index.vue
@@ -13,32 +13,41 @@
             <img src="/static/images/camera.png" class="camera-icon"> 
       </div>
       <div class="form-container">
-          <div :class="[{'isMarginBottom':item.isMarginBottom}]" v-for="(item,index) in formData" :key="index">
+          <div :class="[{'isMarginBottom':item.isMarginBottom}]" v-for="(item,index) in formData" :key="index"  v-show="true">
               <van-cell-group>
                 <van-field
                   :value="item.fieldValue"
                   required
                   clearable
-                  :readonly="item.fieldType ==='select' || item.fieldType === 'datetime'"
+                  autosize
+                  :readonly="item.fieldType === 'select' || item.fieldType === 'datetime'"
+                  :type="item.fieldType"
                   :label="item.fieldName"
                   :icon="item.icon"
                   :border="false"
                   :placeholder="item.placeholder"
-                  @click="(item.fieldType ==='select' || item.fieldType === 'datetime')&& itemClick(index,item)"
+                  @click="(item.fieldType === 'select' || item.fieldType === 'datetime') && itemClick(index,item)"
                 />
               </van-cell-group>
           </div>
       </div>
-      <van-popup :show="timePop"  position="bottom" :overlay="true">
-            <van-datetime-picker
-              type="datetime"
-              @cancel="timePop = false"
-              @confirm="dateTimeConfirm"
-            />
-      </van-popup>
-      <van-popup :show="pickerPop" position="bottom" :overlay="true">
-            <van-picker :title="popTitle" show-toolbar :columns="columns"  @cancel="pickerPop = false" @confirm="onConfirm" />
-      </van-popup>
+      <div class="upload-container">
+            <h5>活动照片</h5>
+            <van-uploader :file-list="fileList" bind:after-read="afterRead" />
+      </div>
+      <div class="release-btn">
+              <span>发布</span>
+      </div>  
+        <van-popup :show="timePop"  position="bottom" :overlay="true">
+              <van-datetime-picker
+                type="datetime"
+                @cancel="timePop = false"
+                @confirm="dateTimeConfirm"
+              />
+        </van-popup>
+        <van-popup :show="pickerPop" position="bottom" :overlay="true">
+              <van-picker :title="popTitle" show-toolbar :columns="columns"  @cancel="pickerPop = false" @confirm="onConfirm" />
+        </van-popup>
   </div>
 </template>
 
@@ -63,7 +72,8 @@ export default {
           fieldValue: '',
           isMarginBottom: true,
           placeholder: '请选择活动类型',
-          icon: 'arrow-down'
+          icon: 'arrow-down',
+          options: ['活动一', '活动二', '活动三']
         },
         {
           fieldId: 'title',
@@ -93,7 +103,7 @@ export default {
         {
           fieldId: 'title',
           fieldName: '活动人数',
-          fieldType: 'text',
+          fieldType: 'number',
           fieldValue: '',
           placeholder: '请输入活动人数',
           isMarginBottom: true,
@@ -111,7 +121,8 @@ export default {
       ],
       columns: [],
       pickerPop: false,
-      timePop: false
+      timePop: false,
+      fileList: []
     }
   },
 
@@ -129,10 +140,14 @@ export default {
         this.timePop = true
         console.log(this.timePop)
       } else if (item.fieldType === 'select') {
-        this.picerPop = true
+        this.pickerPop = true
         this.popTitle = item.placeholder
-        this.columns = item.option
+        this.columns = item.options
+        console.log('columns', this.columns)
       }
+    },
+    afterRead (event) {
+
     }
   }
 }
@@ -158,11 +173,36 @@ export default {
       color:#737a7c;
     }
     /deep/ .van-cell{
-      background: linear-gradient(#edf6eb,#ecf5ec);
+      background: linear-gradient(#e5f3f3,#e6f4f3);
     }
     /deep/ .isMarginBottom{
         margin-bottom:29rpx;
     }
 }
-
+.upload-container{
+    background: linear-gradient(#e5f3f3,#e6f4f3);
+    padding:0rpx 23rpx;
+    &>h5{
+        color:#737a7c;
+        font-size:26rpx;
+        padding:36rpx 0rpx 29rpx;
+    }
+}
+.release-btn {
+     display:flex;
+     justify-content:center;
+     align-items:center;
+     padding:50rpx 0rpx; 
+     &>span{
+         color:#fff;
+         background: linear-gradient(#89c99a,#00b1e2);
+         width:194rpx;
+         height:58rpx;
+         border-radius:20rpx;
+         display:flex;
+         justify-content:center;
+         align-items:center;
+         font-size:26rpx;
+     }
+}
 </style>
