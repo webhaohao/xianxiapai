@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2019-12-20 17:26:00
- * @LastEditTime : 2019-12-23 23:09:13
+ * @LastEditTime : 2019-12-25 00:18:15
  * @LastEditors  : Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \xianxiapai\src\pages\releaseActi\index.vue
@@ -10,14 +10,23 @@
 <template>
   <div>
       <div class="upload-banner">
-            <img src="/static/images/camera.png" class="camera-icon"> 
+            <van-image
+              width="750rpx"
+              height="372rpx"
+              fit="cover"
+              :src="tempFilePaths"
+              @click="uploadwxImage"
+              v-if="tempFilePaths"
+            />
+            <img v-else src="/static/images/camera.png" class="camera-icon" @click="uploadwxImage" > 
       </div>
       <div class="form-container">
-          <div :class="[{'isMarginBottom':item.isMarginBottom}]" v-for="(item,index) in formData" :key="index"  v-show="true">
-              <van-cell-group>
+          <div :class="[{'isMarginBottom':item.isMarginBottom}]" v-for="(item,index) in formData" :key="index">
+              <!--解决textarea 小程序 层级过高问题 没有办法的办法--->
+              <van-cell-group v-if="item.fieldType === 'textarea'">
+                <van-cell :title="item.fieldName" :value="item.fieldValue ? item.fieldValue:item.placeholder" v-if="isShowTextarea"/>
                 <van-field
                   :value="item.fieldValue"
-                  required
                   clearable
                   autosize
                   :readonly="item.fieldType === 'select' || item.fieldType === 'datetime'"
@@ -25,9 +34,27 @@
                   :label="item.fieldName"
                   :icon="item.icon"
                   :border="false"
+                  :data-index = "index"
                   :placeholder="item.placeholder"
                   @click="(item.fieldType === 'select' || item.fieldType === 'datetime') && itemClick(index,item)"
-                  @blur="onBlur"
+                  @input="input"
+                  v-else
+                />
+              </van-cell-group>
+              <van-cell-group v-else>
+                <van-field
+                  :value="item.fieldValue"
+                  clearable
+                  autosize
+                  :readonly="item.fieldType === 'select' || item.fieldType === 'datetime'"
+                  :type="item.fieldType"
+                  :label="item.fieldName"
+                  :icon="item.icon"
+                  :border="false"
+                  :data-index = "index"
+                  :placeholder="item.placeholder"
+                  @click="(item.fieldType === 'select' || item.fieldType === 'datetime') && itemClick(index,item)"
+                  @input="input"
                 />
               </van-cell-group>
           </div>
@@ -42,6 +69,7 @@
         <van-popup :show="timePop"  position="bottom" :overlay="true">
               <van-datetime-picker
                 type="datetime"
+                :value = "currentDate"
                 @cancel="timePop = false"
                 @confirm="dateTimeConfirm"
               />
@@ -53,6 +81,7 @@
 </template>
 
 <script>
+import { parseTime } from '@/utils'
 export default {
   data () {
     return {
@@ -121,9 +150,12 @@ export default {
         }
       ],
       columns: [],
+      isShowTextarea: false,
       pickerPop: false,
       timePop: false,
-      fileList: []
+      fileList: [],
+      currentDate: new Date().getTime(),
+      tempFilePaths: ''
     }
   },
 
@@ -137,6 +169,7 @@ export default {
     itemClick (index, item) {
       console.log(item)
       this.currentIndex = index
+      this.isShowTextarea = true
       if (item.fieldType === 'datetime') {
         this.timePop = true
         console.log(this.timePop)
@@ -153,6 +186,44 @@ export default {
     },
     afterRead (event) {
 
+    },
+    input (event) {
+      console.log('event', event)
+      const index = event.mp.currentTarget.dataset.index
+      this.formData[index].fieldValue = event.mp.detail
+      // this.formData[0].fieldValue = event.mp.detail
+    },
+    onConfirm (value) {
+      console.log('confirm', value)
+      this.formData[this.currentIndex].fieldValue = value.mp.detail.value
+      this.timePop = false
+      this.pickerPop = false
+      this.isShowTextarea = false
+    },
+    dateTimeConfirm (value) {
+      console.log('datetime', value)
+      this.formData[this.currentIndex].fieldValue = parseTime(value.mp.detail, '{y}-{m}-{d} {h}:{i}')
+      this.timePop = false
+      this.pickerPop = false
+      this.isShowTextarea = false
+    },
+    wxChooseImage () {
+      return new Promise((resolve, reject) => {
+        wx.chooseImage({
+          count: 1,
+          sizeType: ['original', 'compressed'],
+          sourceType: ['album', 'camera'],
+          success (res) {
+            // tempFilePath可以作为img标签的src属性显示图片
+            const tempFilePaths = res.tempFilePaths
+            resolve(tempFilePaths)
+          }
+        })
+      })
+    },
+    async uploadwxImage () {
+      this.tempFilePaths = await this.wxChooseImage()
+      // console.log(tempFilePaths)
     }
   }
 }
@@ -168,6 +239,9 @@ export default {
       .camera-icon{
             width:133rpx;
             height:102rpx;
+      }
+      /deep/ .van-image{
+          display: block;
       }
 }
 .form-container{
