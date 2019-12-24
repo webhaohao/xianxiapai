@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2019-12-20 17:26:00
- * @LastEditTime : 2019-12-23 14:34:56
+ * @LastEditTime : 2019-12-24 18:54:20
  * @LastEditors  : Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \xianxiapai\src\pages\releaseActi\index.vue
@@ -13,7 +13,7 @@
             <img src="/static/images/camera.png" class="camera-icon"> 
       </div>
       <div class="form-container">
-          <div :class="[{'isMarginBottom':item.isMarginBottom}]" v-for="(item,index) in formData" :key="index"  v-show="true">
+          <div :class="[{'isMarginBottom':item.isMarginBottom}]" v-for="(item,index) in formData" :key="index">
               <van-cell-group>
                 <van-field
                   :value="item.fieldValue"
@@ -25,8 +25,10 @@
                   :label="item.fieldName"
                   :icon="item.icon"
                   :border="false"
+                  :data-index = "index"
                   :placeholder="item.placeholder"
                   @click="(item.fieldType === 'select' || item.fieldType === 'datetime') && itemClick(index,item)"
+                  @input="input"
                 />
               </van-cell-group>
           </div>
@@ -41,6 +43,7 @@
         <van-popup :show="timePop"  position="bottom" :overlay="true">
               <van-datetime-picker
                 type="datetime"
+                :value = "currentDate"
                 @cancel="timePop = false"
                 @confirm="dateTimeConfirm"
               />
@@ -52,6 +55,7 @@
 </template>
 
 <script>
+import { parseTime } from '@/utils'
 export default {
   data () {
     return {
@@ -122,7 +126,8 @@ export default {
       columns: [],
       pickerPop: false,
       timePop: false,
-      fileList: []
+      fileList: [],
+      currentDate: new Date().getTime()
     }
   },
 
@@ -148,6 +153,24 @@ export default {
     },
     afterRead (event) {
 
+    },
+    input (event) {
+      console.log('event', event)
+      const index = event.mp.currentTarget.dataset.index
+      this.formData[index].fieldValue = event.mp.detail
+      // this.formData[0].fieldValue = event.mp.detail
+    },
+    onConfirm (value) {
+      console.log('confirm', value)
+      this.formData[this.currentIndex].fieldValue = value.mp.detail.value
+      this.timePop = false
+      this.pickerPop = false
+    },
+    dateTimeConfirm (value) {
+      console.log('datetime', value)
+      this.formData[this.currentIndex].fieldValue = parseTime(value.mp.detail, '{y}-{m}-{d} {h}:{i}')
+      this.timePop = false
+      this.pickerPop = false
     }
   }
 }
