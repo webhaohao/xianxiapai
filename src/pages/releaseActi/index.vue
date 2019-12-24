@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2019-12-20 17:26:00
- * @LastEditTime : 2019-12-23 14:34:56
+ * @LastEditTime : 2019-12-23 23:09:13
  * @LastEditors  : Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \xianxiapai\src\pages\releaseActi\index.vue
@@ -27,6 +27,7 @@
                   :border="false"
                   :placeholder="item.placeholder"
                   @click="(item.fieldType === 'select' || item.fieldType === 'datetime') && itemClick(index,item)"
+                  @blur="onBlur"
                 />
               </van-cell-group>
           </div>
@@ -145,6 +146,10 @@ export default {
         this.columns = item.options
         console.log('columns', this.columns)
       }
+    },
+    onBlur (event) {
+      console.log(event)
+      // this.formData[0].fieldType = event.mp.detail
     },
     afterRead (event) {
 
