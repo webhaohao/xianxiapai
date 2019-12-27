@@ -1,15 +1,15 @@
 <!--
  * @Author: your name
  * @Date: 2019-12-03 18:35:21
- * @LastEditTime: 2019-12-18 15:03:57
- * @LastEditors: Please set LastEditors
+ * @LastEditTime : 2019-12-26 10:49:31
+ * @LastEditors  : Please set LastEditors
  * @Description: In User Settings Edit  
  * @FilePath: \xianxiapai\src\components\card.vue
  -->
 <template>
   <div>
       <div class="cards">
-            <div class="card">
+            <div class="card" @click = "itemClick">
                   <div class="card-thumb">
                         <img src="/static/images/card_1.jpg" alt="">
                   </div>
@@ -45,7 +45,14 @@
 
 <script>
 export default {
-  props: ['text']
+  props: ['text'],
+  methods: {
+    itemClick () {
+      console.log('itemClick')
+      const url = `/pages/activityDetails/main`
+      wx.navigateTo({url})
+    }
+  }
 }
 </script>
 

@@ -1,14 +1,14 @@
 <!--
  * @Author: your name
  * @Date: 2019-12-20 17:26:00
- * @LastEditTime : 2019-12-25 00:18:15
+ * @LastEditTime : 2019-12-25 19:56:28
  * @LastEditors  : Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \xianxiapai\src\pages\releaseActi\index.vue
  -->
 <!--  -->
 <template>
-  <div>
+  <div class="release-page">
       <div class="upload-banner">
             <van-image
               width="750rpx"
@@ -61,7 +61,7 @@
       </div>
       <div class="upload-container">
             <h5>活动照片</h5>
-            <van-uploader :file-list="fileList" bind:after-read="afterRead" />
+            <van-uploader :file-list="fileList" @afterRead="afterRead" :multiple="true" />
       </div>
       <div class="release-btn">
               <span>发布</span>
@@ -185,7 +185,11 @@ export default {
       // this.formData[0].fieldType = event.mp.detail
     },
     afterRead (event) {
-
+      console.log(event)
+      const {file} = event.mp.detail
+      console.log(file)
+      this.fileList.push(...file)
+      console.log(this.fileList)
     },
     input (event) {
       console.log('event', event)
@@ -229,6 +233,9 @@ export default {
 }
 </script>
 <style lang='scss' scoped>
+.release-page{
+    padding-bottom:115rpx;
+}
 .upload-banner{
       height:372rpx;
       width:100%;
@@ -269,15 +276,16 @@ export default {
 }
 .release-btn {
      display:flex;
+     position:fixed;
+     width:100%;
+     bottom:0;
      justify-content:center;
      align-items:center;
-     padding:50rpx 0rpx; 
      &>span{
          color:#fff;
          background: linear-gradient(#89c99a,#00b1e2);
-         width:194rpx;
-         height:58rpx;
-         border-radius:20rpx;
+         width:100%;
+         height:98rpx;
          display:flex;
          justify-content:center;
          align-items:center;
