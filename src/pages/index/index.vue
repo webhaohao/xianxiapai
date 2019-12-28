@@ -47,6 +47,7 @@
 import card from '@/components/card'
 import tabBar from '@/components/tabBar'
 import searchBox from '@/components/searchBox'
+import {wxLogin} from '@/api/wxApi'
 // import list from '@/components/list'
 export default {
   components: {
@@ -81,22 +82,17 @@ export default {
     const baseURL = process.env.API_BASE_URL
     console.log('baseURL', baseURL)
     // let app = getApp()
-    wx.login({
-      success (res) {
-        if (res.code) {
-          console.log(res.code)
-          // 发起网络请求
-          // wx.request({
-          //   url: 'https://test.com/onLogin',
-          //   data: {
-          //     code: res.code
-          //   }
-          // })
-        } else {
-          console.log('登录失败！' + res.errMsg)
+    return (async () => {
+      const code = await wxLogin()
+      console.log('code', code)
+      const token = await this.$http.post({
+        url: '/token/user',
+        data: {
+          'code': code
         }
-      }
-    })
+      })
+      console.log(token)
+    })()
   },
   mounted () {
   }

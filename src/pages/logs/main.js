@@ -8,9 +8,5 @@
  */
 import Vue from 'vue'
 import App from './index'
-const Fly = require('flyio/dist/npm/wx')
-const fly = new Fly()
-// 添加全局配置、拦截器等
-Vue.prototype.$http = fly // 将fly实例挂在vue原型上
 const app = new Vue(App)
 app.$mount()
