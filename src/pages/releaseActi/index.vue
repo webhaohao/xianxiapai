@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2019-12-20 17:26:00
- * @LastEditTime : 2019-12-25 19:56:28
+ * @LastEditTime : 2019-12-31 18:26:22
  * @LastEditors  : Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \xianxiapai\src\pages\releaseActi\index.vue
@@ -283,7 +283,7 @@ export default {
      align-items:center;
      &>span{
          color:#fff;
-         background: linear-gradient(#89c99a,#00b1e2);
+         background: linear-gradient(to right,#89c99a,#00b1e2);
          width:100%;
          height:98rpx;
          display:flex;

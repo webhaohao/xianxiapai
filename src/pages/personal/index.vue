@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2019-12-18 15:06:28
- * @LastEditTime : 2019-12-18 19:11:24
+ * @LastEditTime : 2019-12-31 17:32:30
  * @LastEditors  : Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \xianxiapai\src\pages\personal\index.vue
@@ -65,6 +65,7 @@
 
 <script>
 import tabBar from '@/components/tabBar'
+import { mapActions } from 'vuex'
 export default {
   components: {
     tabBar
@@ -88,8 +89,15 @@ export default {
     }
   },
   mounted () {
+    this._wxGetuserInfo()
   },
   created () {
+  },
+  methods: {
+    ...mapActions(['_wxGetuserInfo'])
+  },
+  onShow () {
+    // this._wxGetuserInfo()
   }
 }
 </script>
