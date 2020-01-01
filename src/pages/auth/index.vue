@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2019-12-31 17:00:14
- * @LastEditTime : 2019-12-31 18:23:47
+ * @LastEditTime : 2020-01-01 19:31:10
  * @LastEditors  : Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \xianxiapai\src\pages\auth\index.vue
@@ -9,9 +9,10 @@
 <!--  -->
 <template>
   <div class="pages">
-      <van-image width="219rpx" height="305rpx" src="/static/images/logB.png" />
-      
-      <van-button type="primary" open-type="getUserInfo" color="linear-gradient(to right,#89c99a,#00b1e2)">获取用户信息</van-button>
+      <div class="img-wrapper">
+         <van-image width="219rpx" height="305rpx" src="/static/images/logB.png" />
+      </div>    
+      <van-button type="primary" open-type="getUserInfo" color="linear-gradient(to right,#89c99a,#00b1e2)" @getuserinfo="bindGetUserInfo">获取用户信息</van-button>
   </div>
 </template>
 
@@ -27,7 +28,11 @@ export default {
   computed: {},
   mounted () {},
 
-  methods: {}
+  methods: {
+    bindGetUserInfo (e) {
+      console.log(e)
+    }
+  }
 }
 </script>
 <style lang='scss' scoped>
@@ -37,5 +42,8 @@ export default {
     justify-content:center;
     align-items:center;
     flex-direction:column;
+    .img-wrapper{
+        margin-bottom:100rpx;
+    }
 }
 </style>

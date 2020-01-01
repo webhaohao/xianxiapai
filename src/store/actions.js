@@ -9,12 +9,16 @@
 import {wxSetting, wxGetuserInfo} from '@/api/wxApi'
 const actions = {
   async _wxGetuserInfo ({commit, state}) {
-    const isScope = await wxSetting()
-    if (!isScope.userInfo) {
+    const result = await wxSetting()
+    const {authSetting} = result
+    console.log(authSetting)
+    if (!authSetting['scope.userInfo']) {
       wx.navigateTo({ url: '/pages/auth/main' })
+    } else {
+      const userInfo = await wxGetuserInfo()
+      commit('getWxUserInfo', userInfo)
+      console.log(userInfo)
     }
-    console.log(wxGetuserInfo)
-    console.log(isScope)
   }
 }
 export default actions

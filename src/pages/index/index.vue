@@ -48,6 +48,7 @@ import card from '@/components/card'
 import tabBar from '@/components/tabBar'
 import searchBox from '@/components/searchBox'
 import {wxLogin} from '@/api/wxApi'
+import { getToken } from '@/api/serverApi'
 // import list from '@/components/list'
 export default {
   components: {
@@ -85,12 +86,7 @@ export default {
     return (async () => {
       const code = await wxLogin()
       console.log('code', code)
-      const token = await this.$http.post({
-        url: '/token/user',
-        data: {
-          'code': code
-        }
-      })
+      const token = await getToken({code})
       console.log(token)
     })()
   },

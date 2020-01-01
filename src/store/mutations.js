@@ -17,8 +17,10 @@ const mutations = {
       (list[i].pagePath === pagePath) && (list[i].selected = true)
     }
     state.tabbar.list = list
+  },
+  getWxUserInfo (state, value) {
+    state.wxUserInfo = value
   }
-
 }
 
 export default mutations

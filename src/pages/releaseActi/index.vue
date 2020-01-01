@@ -81,6 +81,9 @@
 </template>
 
 <script>
+import { getAllCategories } from '@/api/serverApi'
+import { wxUploadFile } from '@/api/wxApi'
+import { mapActions } from 'vuex'
 import { parseTime } from '@/utils'
 export default {
   data () {
@@ -96,7 +99,7 @@ export default {
           icon: ''
         },
         {
-          fieldId: 'title',
+          fieldId: 'categories',
           fieldName: '活动类型',
           fieldType: 'select',
           fieldValue: '',
@@ -106,7 +109,7 @@ export default {
           options: ['活动一', '活动二', '活动三']
         },
         {
-          fieldId: 'title',
+          fieldId: 'start_time',
           fieldName: '开始时间',
           fieldType: 'datetime',
           fieldValue: '',
@@ -114,7 +117,7 @@ export default {
           icon: 'arrow-down'
         },
         {
-          fieldId: 'title',
+          fieldId: 'end_time',
           fieldName: '结束时间',
           fieldType: 'datetime',
           fieldValue: '',
@@ -123,7 +126,7 @@ export default {
           icon: 'arrow-down'
         },
         {
-          fieldId: 'title',
+          fieldId: 'location',
           fieldName: '活动地点',
           fieldType: 'text',
           fieldValue: '',
@@ -131,7 +134,7 @@ export default {
           icon: ''
         },
         {
-          fieldId: 'title',
+          fieldId: 'number',
           fieldName: '活动人数',
           fieldType: 'number',
           fieldValue: '',
@@ -140,7 +143,7 @@ export default {
           icon: ''
         },
         {
-          fieldId: 'title',
+          fieldId: 'detail',
           fieldName: '活动详情',
           fieldType: 'textarea',
           fieldValue: '',
@@ -155,7 +158,8 @@ export default {
       timePop: false,
       fileList: [],
       currentDate: new Date().getTime(),
-      tempFilePaths: ''
+      tempFilePaths: '',
+      categories: []
     }
   },
 
@@ -163,9 +167,20 @@ export default {
 
   computed: {},
 
-  mounted () {},
+  mounted () {
+    return (async () => {
+      // this._wxGetuserInfo()
+      this.categories = await getAllCategories()
+      const index = this.formData.findIndex((item) => item.fieldId === 'categories')
+      console.log(this.categories.map(item => item.name))
+      console.log(this.formData[index].options)
+      this.formData[index].options = this.categories.map(item => item.name)
+      console.log(this.categories)
+    })()
+  },
 
   methods: {
+    ...mapActions(['_wxGetuserInfo']),
     itemClick (index, item) {
       console.log(item)
       this.currentIndex = index
@@ -227,6 +242,13 @@ export default {
     },
     async uploadwxImage () {
       this.tempFilePaths = await this.wxChooseImage()
+      const params = {
+        url: process.env.API_BASE_URL + '/upload/image',
+        filePath: this.tempFilePaths[0],
+        name: 'files'
+      }
+      const result = await wxUploadFile(params)
+      console.log('result', result)
       // console.log(tempFilePaths)
     }
   }

@@ -31,11 +31,24 @@ export function wxSetting () {
 }
 
 // 获取用户信息
-export function wxGetuserInfo (resolve, reject) {
-  return new Promise(() => {
+export function wxGetuserInfo () {
+  return new Promise((resolve, reject) => {
     wx.getUserInfo({
       success: function (res) {
         resolve(res.userInfo)
+      }
+    })
+  })
+}
+
+// 微信上传
+
+export function wxUploadFile (data) {
+  return new Promise((resolve, reject) => {
+    wx.uploadFile({
+      ...data,
+      success (res) {
+        resolve(res.data)
       }
     })
   })

@@ -11,10 +11,10 @@
       <div class="main">
             <div class="user-info">
                   <div class="user-thumb">
-                        <img src="/static/images/user_default.png">
+                        <img :src="wxUserInfo.avatarUrl">
                   </div>
                   <div class="user-detail">
-                        <span class="name">Ninja</span>
+                        <span class="name">{{wxUserInfo.nickName}}</span>
                         <span class="level">青铜派</span>  
                   </div>
             </div>
@@ -65,7 +65,7 @@
 
 <script>
 import tabBar from '@/components/tabBar'
-import { mapActions } from 'vuex'
+import { mapActions, mapState } from 'vuex'
 export default {
   components: {
     tabBar
@@ -88,8 +88,12 @@ export default {
       ]
     }
   },
+  computed: {
+    ...mapState(['wxUserInfo'])
+  },
   mounted () {
     this._wxGetuserInfo()
+    console.log(this.wxUserInfo)
   },
   created () {
   },
@@ -97,7 +101,7 @@ export default {
     ...mapActions(['_wxGetuserInfo'])
   },
   onShow () {
-    // this._wxGetuserInfo()
+    this._wxGetuserInfo()
   }
 }
 </script>
@@ -111,6 +115,8 @@ export default {
     background: linear-gradient(#edf6eb, #e7f4f1);
     //background: radial-gradient(red, green, blue);
     .user-thumb{
+          overflow: hidden;
+          border-radius:50%;
           img{
               width:170rpx;
               height:170rpx;
