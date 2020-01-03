@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2019-12-20 17:26:00
- * @LastEditTime : 2019-12-31 18:26:22
+ * @LastEditTime : 2020-01-03 19:35:50
  * @LastEditors  : Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \xianxiapai\src\pages\releaseActi\index.vue
@@ -38,6 +38,9 @@
                   :placeholder="item.placeholder"
                   @click="(item.fieldType === 'select' || item.fieldType === 'datetime') && itemClick(index,item)"
                   @input="input"
+                  :error-message="item.errorMsg"
+                  error-message-align="right"
+                  :required="item.required"
                   v-else
                 />
               </van-cell-group>
@@ -55,16 +58,19 @@
                   :placeholder="item.placeholder"
                   @click="(item.fieldType === 'select' || item.fieldType === 'datetime') && itemClick(index,item)"
                   @input="input"
+                  :error-message="item.errorMsg"
+                  error-message-align="right"
+                  :required="item.required"
                 />
               </van-cell-group>
           </div>
       </div>
       <div class="upload-container">
             <h5>活动照片</h5>
-            <van-uploader :file-list="fileList" @afterRead="afterRead" :multiple="true" />
+            <van-uploader :file-list="fileList" @afterRead="afterRead" @delete="removeFile" :multiple="true" />
       </div>
       <div class="release-btn">
-              <span>发布</span>
+            <van-button color="linear-gradient(to right,#89c99a,#00b1e2)" loading-text="正在发布..." :loading="isLoading" :block="true" @click="handleRelease">发布</van-button>
       </div>  
         <van-popup :show="timePop"  position="bottom" :overlay="true">
               <van-datetime-picker
@@ -72,11 +78,13 @@
                 :value = "currentDate"
                 @cancel="timePop = false"
                 @confirm="dateTimeConfirm"
+                loading
               />
         </van-popup>
         <van-popup :show="pickerPop" position="bottom" :overlay="true">
               <van-picker :title="popTitle" show-toolbar :columns="columns"  @cancel="pickerPop = false" @confirm="onConfirm" />
         </van-popup>
+        <van-toast id="van-toast" />
   </div>
 </template>
 
@@ -84,7 +92,9 @@
 import { getAllCategories } from '@/api/serverApi'
 import { wxUploadFile } from '@/api/wxApi'
 import { mapActions } from 'vuex'
-import { parseTime } from '@/utils'
+import { parseTime, compareDate, dataToserverData } from '@/utils'
+import Toast from '@/../static/vant/toast/toast'
+import { VerifyForm } from '@/utils/verifyForm'
 export default {
   data () {
     return {
@@ -96,7 +106,9 @@ export default {
           fieldValue: '',
           placeholder: '请输入活动标题',
           isMarginBottom: true,
-          icon: ''
+          errorMsg: '',
+          icon: '',
+          required: true
         },
         {
           fieldId: 'categories',
@@ -106,7 +118,10 @@ export default {
           isMarginBottom: true,
           placeholder: '请选择活动类型',
           icon: 'arrow-down',
-          options: ['活动一', '活动二', '活动三']
+          errorMsg: '',
+          options: [
+          ],
+          required: true
         },
         {
           fieldId: 'start_time',
@@ -114,7 +129,16 @@ export default {
           fieldType: 'datetime',
           fieldValue: '',
           placeholder: '请选择开始时间',
-          icon: 'arrow-down'
+          errorMsg: '',
+          icon: 'arrow-down',
+          required: true,
+          validator: (value, index, data, callBack) => {
+            const endTimeIndex = data.findIndex(item => item.fieldId === 'end_time')
+            const result = compareDate(value, 'lt', data[endTimeIndex].fieldValue)
+            if (!result) {
+              callBack(index, '活动开始日期应小于结束日期')
+            }
+          }
         },
         {
           fieldId: 'end_time',
@@ -123,7 +147,16 @@ export default {
           fieldValue: '',
           placeholder: '请选择结束时间',
           isMarginBottom: true,
-          icon: 'arrow-down'
+          errorMsg: '',
+          icon: 'arrow-down',
+          required: true,
+          validator: (value, index, data, callBack) => {
+            const endTimeIndex = data.findIndex(item => item.fieldId === 'start_time')
+            const result = compareDate(value, 'gt', data[endTimeIndex].fieldValue)
+            if (!result) {
+              callBack(index, '活动结束日期应大于开始日期')
+            }
+          }
         },
         {
           fieldId: 'location',
@@ -131,7 +164,9 @@ export default {
           fieldType: 'text',
           fieldValue: '',
           placeholder: '请输入活动地点',
-          icon: ''
+          errorMsg: '',
+          icon: '',
+          required: true
         },
         {
           fieldId: 'number',
@@ -140,7 +175,9 @@ export default {
           fieldValue: '',
           placeholder: '请输入活动人数',
           isMarginBottom: true,
-          icon: ''
+          errorMsg: '',
+          icon: '',
+          required: true
         },
         {
           fieldId: 'detail',
@@ -149,7 +186,9 @@ export default {
           fieldValue: '',
           placeholder: '请输入活动详情',
           isMarginBottom: true,
-          icon: ''
+          errorMsg: '',
+          icon: '',
+          required: true
         }
       ],
       columns: [],
@@ -159,7 +198,8 @@ export default {
       fileList: [],
       currentDate: new Date().getTime(),
       tempFilePaths: '',
-      categories: []
+      categories: [],
+      isLoading: false
     }
   },
 
@@ -168,7 +208,7 @@ export default {
   computed: {},
 
   mounted () {
-    return (async () => {
+    (async () => {
       // this._wxGetuserInfo()
       this.categories = await getAllCategories()
       const index = this.formData.findIndex((item) => item.fieldId === 'categories')
@@ -181,6 +221,24 @@ export default {
 
   methods: {
     ...mapActions(['_wxGetuserInfo']),
+    handleRelease () {
+      // 提交表单,校验表单是否符合要求
+      if (!this.tempFilePaths) {
+        Toast.fail('请上传活动的封面图片!')
+        return false
+      }
+      const verifyForm = new VerifyForm(this.formData)
+      this.formData = verifyForm.formData
+      console.log('formData', this.formData)
+      const verifyResut = verifyForm.getFormVerifyResut()
+      console.log(verifyResut)
+      if (verifyResut) {
+        let serverData = dataToserverData(this.formData)
+        Object.assign(serverData, {main_url_image: this.tempFilePaths}, {fileList: this.fileList})
+        console.log(serverData)
+        this.isLoading = true
+      }
+    },
     itemClick (index, item) {
       console.log(item)
       this.currentIndex = index
@@ -199,12 +257,14 @@ export default {
       console.log(event)
       // this.formData[0].fieldType = event.mp.detail
     },
-    afterRead (event) {
+    async afterRead (event) {
       console.log(event)
       const {file} = event.mp.detail
-      console.log(file)
-      this.fileList.push(...file)
-      console.log(this.fileList)
+      const files = file.map(item => item.path)
+      const result = await this.batchWxUploadFiles(files, '/activity/upload_image')
+      console.log(result)
+      this.fileList.push(...result)
+      // console.log(this.fileList)
     },
     input (event) {
       console.log('event', event)
@@ -241,15 +301,24 @@ export default {
       })
     },
     async uploadwxImage () {
-      this.tempFilePaths = await this.wxChooseImage()
-      const params = {
-        url: process.env.API_BASE_URL + '/upload/image',
-        filePath: this.tempFilePaths[0],
-        name: 'files'
-      }
-      const result = await wxUploadFile(params)
-      console.log('result', result)
-      // console.log(tempFilePaths)
+      const tempFilePaths = await this.wxChooseImage()
+      const result = await this.batchWxUploadFiles(tempFilePaths, '/activity/upload_image')
+      this.tempFilePaths = result[0]['url']
+    },
+    removeFile (e) {
+      const {index} = e.mp.detail
+      this.fileList.splice(index, 1)
+    },
+    batchWxUploadFiles (files, url) {
+      return Promise.all(files.map(async (item) => {
+        const res = await wxUploadFile({
+          url: process.env.API_BASE_URL + url,
+          filePath: item,
+          name: 'files'
+        })
+        return res
+      })
+      )
     }
   }
 }
@@ -257,6 +326,9 @@ export default {
 <style lang='scss' scoped>
 .release-page{
     padding-bottom:115rpx;
+    /deep/ .van-field__error--right{
+        text-align:right;
+    }
 }
 .upload-banner{
       height:372rpx;
@@ -303,15 +375,8 @@ export default {
      bottom:0;
      justify-content:center;
      align-items:center;
-     &>span{
-         color:#fff;
-         background: linear-gradient(to right,#89c99a,#00b1e2);
-         width:100%;
-         height:98rpx;
-         display:flex;
-         justify-content:center;
-         align-items:center;
-         font-size:26rpx;
+     /deep/ ._van-button{
+        width:100%;
      }
 }
 </style>

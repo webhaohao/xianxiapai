@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2019-12-30 19:38:15
- * @LastEditTime : 2019-12-31 12:43:23
+ * @LastEditTime : 2020-01-02 12:51:14
  * @LastEditors  : Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \xianxiapai\src\api\wxApi.js
@@ -48,7 +48,7 @@ export function wxUploadFile (data) {
     wx.uploadFile({
       ...data,
       success (res) {
-        resolve(res.data)
+        resolve(JSON.parse(res.data))
       }
     })
   })
