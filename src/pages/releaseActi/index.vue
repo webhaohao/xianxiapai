@@ -89,7 +89,7 @@
 </template>
 
 <script>
-import { getAllCategories } from '@/api/serverApi'
+import { getAllCategories, createActivity } from '@/api/serverApi'
 import { wxUploadFile } from '@/api/wxApi'
 import { mapActions } from 'vuex'
 import { parseTime, compareDate, dataToserverData } from '@/utils'
@@ -236,6 +236,8 @@ export default {
         let serverData = dataToserverData(this.formData)
         Object.assign(serverData, {main_url_image: this.tempFilePaths}, {fileList: this.fileList})
         console.log(serverData)
+        const result = createActivity(serverData)
+        console.log(result)
         this.isLoading = true
       }
     },
