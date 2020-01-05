@@ -8,7 +8,7 @@
  -->
 <template>
   <div class="personal">
-      <div class="main">
+      <div class="main" v-if="isShowAuth">
             <div class="user-info">
                   <div class="user-thumb">
                         <img :src="wxUserInfo.avatarUrl">
@@ -59,16 +59,19 @@
                   </div>
             </div>
       </div>
+      <auth v-else></auth>
      <tab-bar></tab-bar>
   </div>
 </template>
 
 <script>
 import tabBar from '@/components/tabBar'
+import auth from '@/components/auth'
 import { mapActions, mapState } from 'vuex'
 export default {
   components: {
-    tabBar
+    tabBar,
+    auth
   },
   data () {
     return {
@@ -89,19 +92,22 @@ export default {
     }
   },
   computed: {
-    ...mapState(['wxUserInfo'])
+    ...mapState(['wxUserInfo']),
+    isShowAuth () {
+      return Object.keys(this.wxUserInfo).length
+    }
+  },
+  created () {
+
   },
   mounted () {
     this._wxGetuserInfo()
     console.log(this.wxUserInfo)
   },
-  created () {
-  },
   methods: {
     ...mapActions(['_wxGetuserInfo'])
   },
   onShow () {
-    this._wxGetuserInfo()
   }
 }
 </script>

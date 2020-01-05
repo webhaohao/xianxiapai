@@ -12,7 +12,7 @@ function request (url, method, data, header = {}, noRefetch = false) {
       url: host + url, // 仅为示例，并非真实的接口地址
       method: method,
       data: data,
-      headers: {
+      header: {
         'content-type': 'application/json', // 默认值
         'token': wx.getStorageSync('token')
       },
@@ -21,6 +21,7 @@ function request (url, method, data, header = {}, noRefetch = false) {
         // 判断以2（2xx)开头的状态码为正确
         // 异常不要返回到回调中，就在request中处理，记录日志并showToast一个统一的错误即可
         const code = res.statusCode.toString()
+        console.log('statusCode', code)
         const startChar = code.charAt(0)
         if (startChar === '2') {
           resolve(res.data)

@@ -8,7 +8,8 @@
  -->
 <!--  -->
 <template>
-  <div class="release-page">
+  <div class="pages">
+    <div class="release-page" v-if="isShowAuth">
       <div class="upload-banner">
             <van-image
               width="750rpx"
@@ -70,30 +71,34 @@
             <van-uploader :file-list="fileList" @afterRead="afterRead" @delete="removeFile" :multiple="true" />
       </div>
       <div class="release-btn">
-            <van-button color="linear-gradient(to right,#89c99a,#00b1e2)" loading-text="正在发布..." :loading="isLoading" :block="true" @click="handleRelease">发布</van-button>
+            <van-button color="linear-gradient(to right,#89c99a,#00b1e2)" loading-text="正在发布..." :disabled="disabled" :loading="isLoading" :block="true" @vclick="handleRelease">发布</van-button>
       </div>  
-        <van-popup :show="timePop"  position="bottom" :overlay="true">
-              <van-datetime-picker
-                type="datetime"
-                :value = "currentDate"
-                @cancel="timePop = false"
-                @confirm="dateTimeConfirm"
-                loading
-              />
-        </van-popup>
-        <van-popup :show="pickerPop" position="bottom" :overlay="true">
-              <van-picker :title="popTitle" show-toolbar :columns="columns"  @cancel="pickerPop = false" @confirm="onConfirm" />
-        </van-popup>
-        <van-toast id="van-toast" />
+      <van-popup :show="timePop"  position="bottom" :overlay="true">
+            <van-datetime-picker
+              type="datetime"
+              :value = "currentDate"
+              @cancel="timePop = false"
+              @confirm="dateTimeConfirm"
+              loading
+            />
+      </van-popup>
+      <van-popup :show="pickerPop" position="bottom" :overlay="true">
+            <van-picker :title="popTitle" show-toolbar :columns="columns"  @cancel="pickerPop = false" @confirm="onConfirm" />
+      </van-popup>
+      <van-toast id="van-toast" />
+    </div>
+    <auth v-else></auth>
   </div>
+  
 </template>
 
 <script>
 import { getAllCategories, createActivity } from '@/api/serverApi'
 import { wxUploadFile } from '@/api/wxApi'
-import { mapActions } from 'vuex'
+import { mapActions, mapState } from 'vuex'
 import { parseTime, compareDate, dataToserverData } from '@/utils'
 import Toast from '@/../static/vant/toast/toast'
+import auth from '@/components/auth'
 import { VerifyForm } from '@/utils/verifyForm'
 export default {
   data () {
@@ -199,17 +204,25 @@ export default {
       currentDate: new Date().getTime(),
       tempFilePaths: '',
       categories: [],
-      isLoading: false
+      isLoading: false,
+      disabled: false
     }
   },
 
-  components: {},
+  components: {auth},
 
-  computed: {},
-
+  computed: {
+    ...mapState(['wxUserInfo']),
+    isShowAuth () {
+      return Object.keys(this.wxUserInfo).length
+    }
+  },
+  created () {
+    this._wxGetuserInfo()
+  },
   mounted () {
     (async () => {
-      // this._wxGetuserInfo()
+      console.log('token', wx.getStorageSync('token'))
       this.categories = await getAllCategories()
       const index = this.formData.findIndex((item) => item.fieldId === 'categories')
       console.log(this.categories.map(item => item.name))
@@ -221,7 +234,8 @@ export default {
 
   methods: {
     ...mapActions(['_wxGetuserInfo']),
-    handleRelease () {
+    async handleRelease (event) {
+      console.log(event)
       // 提交表单,校验表单是否符合要求
       if (!this.tempFilePaths) {
         Toast.fail('请上传活动的封面图片!')
@@ -233,12 +247,19 @@ export default {
       const verifyResut = verifyForm.getFormVerifyResut()
       console.log(verifyResut)
       if (verifyResut) {
-        let serverData = dataToserverData(this.formData)
-        Object.assign(serverData, {main_url_image: this.tempFilePaths}, {fileList: this.fileList})
-        console.log(serverData)
-        const result = createActivity(serverData)
-        console.log(result)
         this.isLoading = true
+        this.disabled = true
+        let serverData = dataToserverData(this.formData)
+        const currentCategory = this.categories.filter(item => item.name === serverData.categories)[0]
+        Object.assign(serverData, {main_img_url: this.tempFilePaths}, {detail_imgs: this.fileList}, {category_id: currentCategory.id})
+        console.log(serverData)
+        const result = await createActivity(serverData)
+        console.log(result)
+        if (result.code === 201) {
+          Toast.success('活动发布成功')
+          this.isLoading = false
+          this.disabled = false
+        }
       }
     },
     itemClick (index, item) {

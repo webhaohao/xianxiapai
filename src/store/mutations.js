@@ -20,6 +20,9 @@ const mutations = {
   },
   getWxUserInfo (state, value) {
     state.wxUserInfo = value
+  },
+  getActivityItem (state, item) {
+    state.activityItem = item
   }
 }
 

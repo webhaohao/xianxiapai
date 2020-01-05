@@ -14,14 +14,14 @@
                 width="750rpx"
                 height="416rpx"
                 fit="contain"
-                src="/static/images/detail.jpg"
+                :src="activityItem.main_img_url"
               />
         </div>
         <div class="main">
             <div class="activ-intr">
                   <div class="flex-row">
-                        <div class="title">午后时光1V1篮球赛</div>
-                        <div class="type">体育</div> 
+                        <div class="title">{{activityItem.title}}</div>
+                        <div class="type">{{categroyInfo.name}}</div> 
                   </div> 
                   <div class="flex-row activ-msg">
                         <div class="left-con">
@@ -30,16 +30,15 @@
                               <div class="icon iconfont icon-shijian">
                               </div>
                               <div class="start-time-and-end-time">
-                                    <span>2019—12—07 09:00起</span>
-                                    <span>2019—12—07 09:00止</span>
+                                    <span>{{activityItem.start_time}}起</span>
+                                    <span>{{activityItem.end_time}}止</span>
                               </div>
                           </div>
                           <!--地点-->
                           <div class="location">
                                 <div class="icon iconfont icon-dingwei"></div>
                                 <div class="addr">
-                                    <span>综合体育馆</span>
-                                    <span>学生活动中心</span>
+                                    <span>{{activityItem.location}}</span>
                                 </div> 
                           </div>
                         </div>
@@ -48,7 +47,7 @@
                             <div class="integral">
                                 <div class="icon iconfont icon-jifen"></div> 
                                 <div class="integral-value">
-                                    <span>233</span>
+                                    <span>{{activityItem.integral}}</span>
                                 </div> 
                             </div>
                         </div>
@@ -59,8 +58,8 @@
                   <div class="activity-process">
                         <div class="icon iconfont icon-yonghu"></div>
                         <div class="proccess-bar">
-                                <div class="proccess-bar-current" style="width:50%"></div>
-                                <div class="number">20/100</div>
+                                <div class="proccess-bar-current" :style="{width:percentage}"></div>
+                                <div class="number">{{activityItem.join_people}}/{{activityItem.number}}</div>
                         </div>
                   </div>
                   <div class="join-user-list">
@@ -78,7 +77,7 @@
                                       <img              
                                           class='slide-image' 
                                           mode='aspectFit' 
-                                          src="/static/images/user-photo.png" 
+                                          :src="releaserInfo.avatar" 
                                       />
                                 </swiper-item>
                                 <swiper-item>
@@ -103,14 +102,27 @@
             <van-divider />
             <div class="activity-detail">
                     <div class="title"><span class="icon iconfont icon-tishi"></span>活动详情</div>
-                    <div class="detail-c"></div>
+                    <div class="detail-c">
+                            {{activityItem.detail}}
+                    </div>
+                    <div class="detail-imgs">
+                            <div class="img"  v-for="(item,index) in activityItem.items" :key="index">
+                                <van-image
+                                    width="224rpx"
+                                    height="203rpx"
+                                    fit="contain"
+                                    :src="item.img.url"
+                                />
+                            </div>
+                    </div>
             </div>   
         </div>
         <van-submit-bar
-            button-text="报名"
+            :button-text="buttonText"
             @submit="onSubmit"
             button-class="sign-up-btn"
             :loading="isLoading"
+            :disabled="disabled"
         >
           <div class="is-agree">
               <van-checkbox :value="isAgree" @change="checkboxChange" checked-color="#90cb93">
@@ -122,26 +134,55 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
+import { getCategoryByAccId, getReleaserInfoByScopeAndUserId } from '@/api/serverApi'
 export default {
   data () {
     return {
       swiperCurrentIndex: 0,
       isLoading: false,
-      isAgree: false
+      isAgree: false,
+      categroyInfo: {},
+      releaserInfo: {},
+      buttonText: '报名',
+      disabled: false
     }
   },
 
   components: {},
 
-  computed: {},
+  computed: {
+    ...mapState(['activityItem']),
+    percentage () {
+      return `${this.activityItem.join_people / this.activityItem.number * 100}%`
+    }
+  },
 
-  mounted () {},
+  mounted () {
+    (async () => {
+      this.categroyInfo = await getCategoryByAccId({
+        categoryId: this.activityItem.category_id
+      })
+      this.releaserInfo = await getReleaserInfoByScopeAndUserId({
+        scope: this.activityItem.scope,
+        user_id: this.activityItem.user_id
+      })
+      if (!this.releaserInfo.scope) {
+        if (this.releaserInfo.id === this.activityItem.user_id) {
+          this.buttonText = '已报名'
+          this.disabled = true
+        }
+      }
+    })()
+    console.log(this.activityItem)
+  },
 
   methods: {
     arrowClick () {
       // this.swiperCurrentIndex++
     },
     onSubmit () {
+      console.log('submit')
       this.isLoading = true
     },
     checkboxChange (event) {
@@ -151,6 +192,9 @@ export default {
 }
 </script>
 <style lang='scss' scoped>
+.page{
+    padding-bottom:100rpx;
+}
 .icon{
       font-size:40rpx;  
       background-image:linear-gradient(#89c99a,#00b1e2);
@@ -273,6 +317,21 @@ export default {
            &>span{
               margin-right:13rpx;
            }
+     }
+     .detail-c{
+         color:#737a7c;
+         font-size:24rpx;
+         margin:40rpx 0rpx;
+     }
+     .detail-imgs{
+          display:flex;
+          flex-wrap:wrap;
+          &>.img{
+               margin-right:10rpx;
+          }
+          &>.img:nth-child(3n){
+              margin-right:0rpx;
+          }
      }
 }
 </style>

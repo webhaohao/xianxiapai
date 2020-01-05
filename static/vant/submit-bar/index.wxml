@@ -34,7 +34,7 @@
       disabled="{{ disabled }}"
       class="van-submit-bar__button"
       custom-class="button-class"
-      bind:click="onSubmit"
+      bind:vclick="onSubmit"
     >
       {{ loading ? '' : buttonText }}
     </van-button>

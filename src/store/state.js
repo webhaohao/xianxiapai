@@ -49,6 +49,7 @@ const state = {
       }
     ]
   },
-  wxUserInfo: {}
+  wxUserInfo: {},
+  activityItem: {}
 }
 export default state

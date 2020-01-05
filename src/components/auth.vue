@@ -17,6 +17,7 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex'
 export default {
   data () {
     return {
@@ -31,17 +32,25 @@ export default {
   methods: {
     bindGetUserInfo (e) {
       console.log(e)
-    }
+      this._wxGetuserInfo()
+    },
+    ...mapActions(['_wxGetuserInfo'])
   }
 }
 </script>
 <style lang='scss' scoped>
 .pages{
-    height:100vh;
+    height:100%;
+    width:100%;
+    background:#fff;
     display:flex;
     justify-content:center;
     align-items:center;
     flex-direction:column;
+    position: fixed;
+    top:0;
+    left:0;
+    z-index:50;
     .img-wrapper{
         margin-bottom:100rpx;
     }

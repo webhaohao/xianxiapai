@@ -9,30 +9,30 @@
 <template>
   <div>
       <div class="cards">
-            <div class="card" @click = "itemClick">
+            <div class="card" @click = "itemClick" :data-item="item" v-for="(item,index) in list" :key="index">
                   <div class="card-thumb">
-                        <img src="/static/images/card_1.jpg" alt="">
+                        <img :src="item.main_img_url" alt="">
                   </div>
                   <div class="card-info">
                         <div class="card-info-left">
-                              <span class="title">谁才是王者荣耀中真的的王者</span>
-                              <span class="title-s">中国政法大学昌平校区王者荣耀校内火热开启！</span>
+                              <span class="title">{{item.title}}</span>
+                              <!-- <span class="title-s">中国政法大学昌平校区王者荣耀校内火热开启！</span> -->
                         </div> 
                         <div class="card-info-right">
                               <div class="row">
                                     <div class="time">
                                           <img src="/static/images/time.png" alt="">
-                                          <span>2019-12-03 </span>
+                                          <span>{{item.start_time}}</span>
                                     </div>
                               </div>   
                               <div class="row">
                                     <div class="users">
                                           <img src="/static/images/user.png" alt="">
-                                          <span>50</span>
+                                          <span>{{item.number}}</span>
                                     </div>
                                     <div class="integral">
                                           <img src="/static/images/yuan.png">
-                                          <span>233</span>
+                                          <span>{{item.integral}}</span>
                                     </div>
                               </div>   
                               
@@ -44,14 +44,38 @@
 </template>
 
 <script>
+import { mapMutations } from 'vuex'
 export default {
-  props: ['text'],
+  props: {
+    list: {
+      type: Array,
+      default: () => {
+        return [
+          {
+            main_img_url: '/static/images/card_1.jpg',
+            title: '谁才是王者荣耀中真的的王者',
+            start_time: '2019-12-03',
+            end_time: '2019-12-03',
+            number: '12'
+          }
+        ]
+      }
+    }
+
+  },
   methods: {
-    itemClick () {
+    itemClick (event) {
       console.log('itemClick')
+      console.log(event)
+      const { item } = event.currentTarget.dataset
+      console.log(item)
+      this.getActivityItem(item)
       const url = `/pages/activityDetails/main`
       wx.navigateTo({url})
-    }
+    },
+    ...mapMutations({
+      getActivityItem: 'getActivityItem'
+    })
   }
 }
 </script>
