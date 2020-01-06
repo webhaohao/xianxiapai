@@ -1,7 +1,7 @@
 /*
  * @Author: web_haohao
  * @Date: 2020-01-03 10:38:33
- * @LastEditTime : 2020-01-03 14:36:02
+ * @LastEditTime : 2020-01-06 11:20:48
  * @LastEditors  : Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \xianxiapai\src\utils\verifyForm.js
@@ -13,39 +13,32 @@ class VerifyForm {
     this.formItemValidator()
   }
   checkedFormData () {
-    this.formData.map(item => {
+    this.formData.map((item, index, arr) => {
       if (item.required) {
-        if (item.fieldValue && item.fieldValue.trim()) {
-          item.errorMsg = ''
-          // 查看数据中是否有rule...
-          // 如果有 rules 则进行验证 , rules 在数据中定义为数组为之后扩展
-          if (item.rules) {
-            this.checkedFormRules()
-          } else {
-            item.errorMsg = ''
-          }
-        } else {
-          item.errorMsg = item.placeholder
-        }
-        // item.validator && item.validator()
-      } else {
-        item.errorMsg = ''
+        this.checkItemRequired(item, index, arr)
+      }
+      if (item.rules) {
+        !item.errorMsg && this.checkedFormRules(item, index, arr)
+      }
+      if (item.validator) {
+        !item.errorMsg && this.formItemValidator(item, index, arr)
       }
       return item
     })
   }
-  checkedFormRules () {
+  checkItemRequired (item, index, arr) {
+    if (!item.fieldValue && !item.fieldValue.trim()) {
+      this.formData[index].errorMsg = item.placeholder
+    } else {
+      this.formData[index].errorMsg = ''
+    }
+  }
+  checkedFormRules (item) {
 
   }
-  formItemValidator () {
+  formItemValidator (item, index, arr) {
     // 如果 formData 中 含有属性  validator  && 前面的验证都通过后,执行 validator为业务逻辑的校验
-    const result = this.getFormVerifyResut()
-    if (!result) {
-      return false
-    }
-    this.formData.map((item, index, arr) => {
-      item.validator && item.validator(item.fieldValue, index, arr, this.itemValidatorCallback.bind(this))
-    })
+    item.validator && item.validator(item.fieldValue, index, arr, this.itemValidatorCallback.bind(this))
   }
   itemValidatorCallback (index, message) {
     this.formData[index].errorMsg = message

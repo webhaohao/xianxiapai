@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2019-12-20 17:26:00
- * @LastEditTime : 2020-01-03 19:35:50
+ * @LastEditTime : 2020-01-06 11:22:19
  * @LastEditors  : Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \xianxiapai\src\pages\releaseActi\index.vue
@@ -222,7 +222,6 @@ export default {
   },
   mounted () {
     (async () => {
-      console.log('token', wx.getStorageSync('token'))
       this.categories = await getAllCategories()
       const index = this.formData.findIndex((item) => item.fieldId === 'categories')
       console.log(this.categories.map(item => item.name))
@@ -237,10 +236,10 @@ export default {
     async handleRelease (event) {
       console.log(event)
       // 提交表单,校验表单是否符合要求
-      if (!this.tempFilePaths) {
-        Toast.fail('请上传活动的封面图片!')
-        return false
-      }
+      // if (!this.tempFilePaths) {
+      //   Toast.fail('请上传活动的封面图片!')
+      //   return false
+      // }
       const verifyForm = new VerifyForm(this.formData)
       this.formData = verifyForm.formData
       console.log('formData', this.formData)
