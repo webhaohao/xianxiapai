@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2019-12-20 17:26:00
- * @LastEditTime : 2020-01-06 11:22:19
+ * @LastEditTime : 2020-01-07 16:11:16
  * @LastEditors  : Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \xianxiapai\src\pages\releaseActi\index.vue
@@ -234,18 +234,19 @@ export default {
   methods: {
     ...mapActions(['_wxGetuserInfo']),
     async handleRelease (event) {
-      console.log(event)
+      console.log('handleRelease')
       // 提交表单,校验表单是否符合要求
-      // if (!this.tempFilePaths) {
-      //   Toast.fail('请上传活动的封面图片!')
-      //   return false
-      // }
+      if (!this.tempFilePaths) {
+        Toast.fail('请上传活动的封面图片!')
+        return false
+      }
       const verifyForm = new VerifyForm(this.formData)
-      this.formData = verifyForm.formData
+      console.log('verifyForm', verifyForm)
       console.log('formData', this.formData)
       const verifyResut = verifyForm.getFormVerifyResut()
       console.log(verifyResut)
       if (verifyResut) {
+        this.formData = verifyForm.formData
         this.isLoading = true
         this.disabled = true
         let serverData = dataToserverData(this.formData)

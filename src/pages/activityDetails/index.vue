@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2019-12-26 10:26:00
- * @LastEditTime : 2019-12-27 19:41:09
+ * @LastEditTime : 2020-01-07 19:40:56
  * @LastEditors  : Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \xianxiapai\src\pages\activityDetails\index.vue
@@ -13,7 +13,7 @@
               <van-image
                 width="750rpx"
                 height="416rpx"
-                fit="contain"
+                fit="cover"
                 :src="activityItem.main_img_url"
               />
         </div>
@@ -135,7 +135,7 @@
 
 <script>
 import { mapState } from 'vuex'
-import { getCategoryByAccId, getReleaserInfoByScopeAndUserId } from '@/api/serverApi'
+import { getCategoryByAccId } from '@/api/serverApi'
 export default {
   data () {
     return {
@@ -163,16 +163,16 @@ export default {
       this.categroyInfo = await getCategoryByAccId({
         categoryId: this.activityItem.category_id
       })
-      this.releaserInfo = await getReleaserInfoByScopeAndUserId({
-        scope: this.activityItem.scope,
-        user_id: this.activityItem.user_id
-      })
-      if (!this.releaserInfo.scope) {
-        if (this.releaserInfo.id === this.activityItem.user_id) {
-          this.buttonText = '已报名'
-          this.disabled = true
-        }
-      }
+      // this.releaserInfo = await getReleaserInfoByScopeAndUserId({
+      //   scope: this.activityItem.scope,
+      //   user_id: this.activityItem.user_id
+      // })
+      // if (!this.releaserInfo.scope) {
+      //   if (this.releaserInfo.id === this.activityItem.user_id) {
+      //     this.buttonText = '已报名'
+      //     this.disabled = true
+      //   }
+      // }
     })()
     console.log(this.activityItem)
   },

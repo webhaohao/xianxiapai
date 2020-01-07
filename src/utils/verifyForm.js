@@ -1,7 +1,7 @@
 /*
  * @Author: web_haohao
  * @Date: 2020-01-03 10:38:33
- * @LastEditTime : 2020-01-06 11:20:48
+ * @LastEditTime : 2020-01-07 16:36:50
  * @LastEditors  : Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \xianxiapai\src\utils\verifyForm.js
@@ -10,7 +10,6 @@ class VerifyForm {
   constructor (formData) {
     this.formData = formData
     this.checkedFormData()
-    this.formItemValidator()
   }
   checkedFormData () {
     this.formData.map((item, index, arr) => {

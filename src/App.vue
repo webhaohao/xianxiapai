@@ -1,13 +1,17 @@
 <!--
  * @Author: your name
  * @Date: 2019-12-03 18:35:21
- * @LastEditTime : 2019-12-20 15:02:03
+ * @LastEditTime : 2020-01-07 18:02:25
  * @LastEditors  : Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \xianxiapai\src\App.vue
  -->
 <script>
 export default {
+  onLaunch (options) {
+    // Do something initial when launch.
+    wx.hideTabBar()
+  },
   created () {
     // 调用API从本地缓存中获取数据
     /*

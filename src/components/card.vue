@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2019-12-03 18:35:21
- * @LastEditTime : 2019-12-26 10:49:31
+ * @LastEditTime : 2020-01-07 18:44:04
  * @LastEditors  : Please set LastEditors
  * @Description: In User Settings Edit  
  * @FilePath: \xianxiapai\src\components\card.vue
@@ -11,7 +11,7 @@
       <div class="cards">
             <div class="card" @click = "itemClick" :data-item="item" v-for="(item,index) in list" :key="index">
                   <div class="card-thumb">
-                        <img :src="item.main_img_url" alt="">
+                        <img :src="item.main_img_url" alt="" mode="aspectFill">
                   </div>
                   <div class="card-info">
                         <div class="card-info-left">

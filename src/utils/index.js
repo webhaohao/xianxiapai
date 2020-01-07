@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2019-12-03 18:35:21
- * @LastEditTime : 2020-01-03 19:29:34
+ * @LastEditTime : 2020-01-07 18:33:48
  * @LastEditors  : Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \xianxiapai\src\utils\index.js
@@ -86,8 +86,8 @@ export function formatTime (date) {
 // dateTime 为 YYYY-mm-dd
 // compare 为 比较符号 eq 等于 gt大于  lt小于
 export function compareDate (dateTime1, compare, dateTime2) {
-  const formatDate1 = +new Date(dateTime1)
-  const formatDate2 = +new Date(dateTime2)
+  const formatDate1 = Date.parse(dateTime1.replace(/-/g, '/'))
+  const formatDate2 = Date.parse(dateTime2.replace(/-/g, '/'))
   if (compare === 'eq') {
     if (formatDate1 === formatDate2) {
       return true
