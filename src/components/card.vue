@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2019-12-03 18:35:21
- * @LastEditTime : 2020-01-07 18:44:04
+ * @LastEditTime : 2020-01-08 13:34:09
  * @LastEditors  : Please set LastEditors
  * @Description: In User Settings Edit  
  * @FilePath: \xianxiapai\src\components\card.vue
@@ -69,8 +69,8 @@ export default {
       console.log(event)
       const { item } = event.currentTarget.dataset
       console.log(item)
-      this.getActivityItem(item)
-      const url = `/pages/activityDetails/main`
+      // this.getActivityItem(item)
+      const url = `/pages/activityDetails/main?id=${item.id}`
       wx.navigateTo({url})
     },
     ...mapMutations({

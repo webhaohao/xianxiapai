@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2019-12-26 10:26:00
- * @LastEditTime : 2020-01-07 19:40:56
+ * @LastEditTime : 2020-01-08 15:26:02
  * @LastEditors  : Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \xianxiapai\src\pages\activityDetails\index.vue
@@ -59,7 +59,7 @@
                         <div class="icon iconfont icon-yonghu"></div>
                         <div class="proccess-bar">
                                 <div class="proccess-bar-current" :style="{width:percentage}"></div>
-                                <div class="number">{{activityItem.join_people}}/{{activityItem.number}}</div>
+                                <div class="number">{{joinPoeple}}/{{activityItem.number}}</div>
                         </div>
                   </div>
                   <div class="join-user-list">
@@ -70,30 +70,24 @@
                                   :autoplay="false"
                                   :duration='1000'
                                   :circular="true"
-                                  :display-multiple-items="3"
                                   :current="swiperCurrentIndex"
+                                  :display-multiple-items="swiperItem"
                                 >
-                                <swiper-item>
-                                      <img              
-                                          class='slide-image' 
-                                          mode='aspectFit' 
-                                          :src="releaserInfo.avatar" 
-                                      />
-                                </swiper-item>
-                                <swiper-item>
-                                      <img              
-                                          class='slide-image' 
-                                          mode='aspectFit' 
+                                <block v-for="(item,index) in users" :key="index">
+                                  <swiper-item>
+                                        <img              
+                                            class='slide-image' 
+                                            mode='aspectFit' 
+                                            :src="item.avatar" 
+                                        />
+                                  </swiper-item>   
+                                </block>  
+                                  <swiper-item  v-for="(item,i) in holder" :key="i">
+                                      <!-- <img class='slide-image' 
                                           src="/static/images/user-photo.png" 
-                                      />
-                                </swiper-item>
-                                <swiper-item>
-                                      <img              
-                                          class='slide-image' 
-                                          mode='aspectFit' 
-                                          src="/static/images/user-photo.png" 
-                                      />
-                                </swiper-item>
+                                          :data-index="index"
+                                      /> -->
+                                  </swiper-item>
                             </swiper>  
                         </div> 
                         <van-icon name="arrow" color="#eff0f2" @click="arrowClick"/>
@@ -130,22 +124,27 @@
               </van-checkbox>
           </div>
         </van-submit-bar>
+        <van-toast id="van-toast" />
   </div>
 </template>
 
 <script>
 import { mapState } from 'vuex'
-import { getCategoryByAccId } from '@/api/serverApi'
+import Toast from '@/../static/vant/toast/toast'
+import { getCategoryByAccId, getActivityDetailById, checkUserIsJoinActivity, joinActivity } from '@/api/serverApi'
 export default {
   data () {
     return {
+      activityItem: {},
       swiperCurrentIndex: 0,
       isLoading: false,
       isAgree: false,
       categroyInfo: {},
       releaserInfo: {},
       buttonText: '报名',
-      disabled: false
+      disabled: false,
+      swiperItem: 3,
+      users: []
     }
   },
 
@@ -154,36 +153,58 @@ export default {
   computed: {
     ...mapState(['activityItem']),
     percentage () {
-      return `${this.activityItem.join_people / this.activityItem.number * 100}%`
+      return `${this.users.length / this.activityItem.number * 100}%`
+    },
+    joinPoeple () {
+      return this.users.length
+    },
+    holder () {
+      const count = this.swiperItem - (this.users.length % this.swiperItem)
+      console.log([...String(count).repeat(count)])
+      return [...String(count).repeat(count)]
     }
   },
 
   mounted () {
-    (async () => {
-      this.categroyInfo = await getCategoryByAccId({
-        categoryId: this.activityItem.category_id
-      })
-      // this.releaserInfo = await getReleaserInfoByScopeAndUserId({
-      //   scope: this.activityItem.scope,
-      //   user_id: this.activityItem.user_id
-      // })
-      // if (!this.releaserInfo.scope) {
-      //   if (this.releaserInfo.id === this.activityItem.user_id) {
-      //     this.buttonText = '已报名'
-      //     this.disabled = true
-      //   }
-      // }
-    })()
-    console.log(this.activityItem)
+    console.log('root', this.$root)
+    const {id} = this.$root.$mp.query
+    this.init(id)
   },
 
   methods: {
     arrowClick () {
       // this.swiperCurrentIndex++
     },
-    onSubmit () {
-      console.log('submit')
+    init (id) {
+      (async () => {
+        this.activityItem = await getActivityDetailById(id)
+        this.categroyInfo = await getCategoryByAccId({
+          categoryId: this.activityItem.category_id
+        })
+        this.users = this.activityItem.users
+        console.log('users', this.users)
+        const {isExist} = await checkUserIsJoinActivity(id)
+        if (isExist) {
+          this.buttonText = '已报名'
+          this.disabled = true
+        } else {
+          this.buttonText = '报名'
+          this.disabled = false
+        }
+      })()
+    },
+    async onSubmit () {
       this.isLoading = true
+      const result = await joinActivity({activityId: this.activityItem.id})
+      if (result.code === 201) {
+        console.log('报名成功')
+        Toast.success('报名成功')
+        const {id} = this.$root.$mp.query
+        // this.activityItem = null
+        this.init(id)
+      }
+      this.isLoading = false
+      console.log(result)
     },
     checkboxChange (event) {
       this.isAgree = !this.isAgree

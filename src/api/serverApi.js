@@ -1,3 +1,11 @@
+/*
+ * @Author: your name
+ * @Date: 2019-12-30 19:38:15
+ * @LastEditTime : 2020-01-08 13:50:01
+ * @LastEditors  : Please set LastEditors
+ * @Description: In User Settings Edit
+ * @FilePath: \xianxiapai\src\api\serverApi.js
+ */
 import request from '@/utils/request'
 
 export function getToken (data) {
@@ -24,6 +32,17 @@ export function updateWxUserInfo (data) {
 }
 export function getReleaserInfoByScopeAndUserId (data) {
   return request('/activity/getReleaserinfo_by_scope_and_userid', 'post', data)
+}
+
+export function getActivityDetailById (id) {
+  return request(`/activity/detail/${id}`, 'get')
+}
+
+export function checkUserIsJoinActivity (id) {
+  return request(`/user/check_user/${id}`, 'get')
+}
+export function joinActivity (data) {
+  return request('/activity/join_activity', 'post', data)
 }
 // export function uploadImage (data) {
 //   return request('/upload/image', 'post', data)

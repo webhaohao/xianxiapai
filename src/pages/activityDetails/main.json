@@ -5,6 +5,7 @@
   "navigationStyle":"default",
   "navigationBarTextStyle": "black",
   "usingComponents": {
+    "van-toast": "/static/vant/toast/index",
     "van-icon": "/static/vant/icon/index",
     "van-image": "/static/vant/image/index",
     "van-submit-bar":"/static/vant/submit-bar/index",
