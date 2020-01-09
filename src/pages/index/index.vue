@@ -35,7 +35,9 @@
           <van-tab title="个人活动">
                   <card :list ="activity"></card>
           </van-tab>
-          <van-tab title="组织活动">内容 3</van-tab>
+          <van-tab title="组织活动">
+                   <card :list ="activity"></card>
+          </van-tab>
           <van-tab title="体育活动">内容 4</van-tab>
         </van-tabs>
     </div>
@@ -82,6 +84,8 @@ export default {
       let scope = 16
       if (title === '个人活动') {
         scope = 16
+      } else if (title === '组织活动') {
+        scope = 32
       }
       this.activity = await getActivitesByScope(scope)
       console.log(this.activity)

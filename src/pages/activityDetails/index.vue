@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2019-12-26 10:26:00
- * @LastEditTime : 2020-01-08 15:26:02
+ * @LastEditTime : 2020-01-09 18:28:20
  * @LastEditors  : Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \xianxiapai\src\pages\activityDetails\index.vue
@@ -73,21 +73,23 @@
                                   :current="swiperCurrentIndex"
                                   :display-multiple-items="swiperItem"
                                 >
-                                <block v-for="(item,index) in users" :key="index">
-                                  <swiper-item>
-                                        <img              
-                                            class='slide-image' 
-                                            mode='aspectFit' 
-                                            :src="item.avatar" 
-                                        />
-                                  </swiper-item>   
+                                <block >
+                                    <swiper-item v-for="(item,index) in users" :key="index">
+                                          <img              
+                                              class='slide-image' 
+                                              mode='aspectFit' 
+                                              :src="item.avatar" 
+                                          />
+                                    </swiper-item>   
                                 </block>  
-                                  <swiper-item  v-for="(item,i) in holder" :key="i">
-                                      <!-- <img class='slide-image' 
-                                          src="/static/images/user-photo.png" 
-                                          :data-index="index"
-                                      /> -->
-                                  </swiper-item>
+                                 <block >
+                                    <swiper-item  v-for="(item,i) in holder" :key="i">
+                                        <!-- <img class='slide-image' 
+                                            src="/static/images/user-photo.png" 
+                                            :data-index="index"
+                                        /> -->
+                                    </swiper-item>
+                                  </block >
                             </swiper>  
                         </div> 
                         <van-icon name="arrow" color="#eff0f2" @click="arrowClick"/>
@@ -97,7 +99,7 @@
             <div class="activity-detail">
                     <div class="title"><span class="icon iconfont icon-tishi"></span>活动详情</div>
                     <div class="detail-c">
-                            {{activityItem.detail}}
+                            <wxParse :content="activityItem.detail" />
                     </div>
                     <div class="detail-imgs">
                             <div class="img"  v-for="(item,index) in activityItem.items" :key="index">
@@ -129,6 +131,7 @@
 </template>
 
 <script>
+import wxParse from 'mpvue-wxparse'
 import { mapState } from 'vuex'
 import Toast from '@/../static/vant/toast/toast'
 import { getCategoryByAccId, getActivityDetailById, checkUserIsJoinActivity, joinActivity } from '@/api/serverApi'
@@ -148,7 +151,7 @@ export default {
     }
   },
 
-  components: {},
+  components: {wxParse},
 
   computed: {
     ...mapState(['activityItem']),
@@ -213,6 +216,7 @@ export default {
 }
 </script>
 <style lang='scss' scoped>
+@import url("~mpvue-wxparse/src/wxParse.css");
 .page{
     padding-bottom:100rpx;
 }
