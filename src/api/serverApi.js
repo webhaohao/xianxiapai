@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2019-12-30 19:38:15
- * @LastEditTime : 2020-01-08 13:50:01
+ * @LastEditTime : 2020-01-10 13:02:23
  * @LastEditors  : Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \xianxiapai\src\api\serverApi.js
@@ -44,6 +44,14 @@ export function checkUserIsJoinActivity (id) {
 export function joinActivity (data) {
   return request('/activity/join_activity', 'post', data)
 }
-// export function uploadImage (data) {
-//   return request('/upload/image', 'post', data)
-// }
+
+export function getNewsCategories () {
+  return request('/newsCategory/all', 'get')
+}
+export function getNewsDetailByCategoryId (data) {
+  return request('/news/detail_by_CategoryId', 'get', data)
+}
+
+export function getNewsDetailById (id) {
+  return request(`/news/detail/${id}`, 'get')
+}

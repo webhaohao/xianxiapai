@@ -1,0 +1,17 @@
+{
+  "backgroundTextStyle": "light",
+  "navigationBarBackgroundColor": "#fff",
+  "navigationBarTitleText": "新鲜详情",
+  "navigationStyle":"default",
+  "navigationBarTextStyle": "black",
+  "usingComponents": {
+    "van-toast": "/static/vant/toast/index",
+    "van-icon": "/static/vant/icon/index",
+    "van-image": "/static/vant/image/index",
+    "van-submit-bar":"/static/vant/submit-bar/index",
+    "van-icon": "/static/vant/icon/index",
+    "van-divider": "/static/vant/divider/index",
+    "van-checkbox": "/static/vant/checkbox/index",
+    "van-checkbox-group": "/static/vant/checkbox-group/index"
+  }
+}

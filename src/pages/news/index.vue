@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2019-12-19 14:13:18
- * @LastEditTime : 2019-12-19 14:17:44
+ * @LastEditTime : 2020-01-10 12:52:12
  * @LastEditors  : Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \xianxiapai\src\pages\news\index.vue
@@ -25,29 +25,16 @@
               </div>
         </div>
         <div class="list">
-              <div class="group">
+              <div class="group" v-for="(item,index) in list" :key="index" @click="newsItemClick(item,index)">
                     <div class="news-thumb">
-                          <img src="/static/images/news_thumb.png">
+                          <img :src="item.main_img_url">
                     </div>
                     <div class="news-detail">
                          <div class="title">
-                           谁才是王者荣耀中真正的王者？
+                            {{item.title}}
                          </div>
                          <div class="desc">
-                              2019年12月7日，中国政法大学昌平校区王者荣耀校内火热开启！各路王者集结!
-                         </div>
-                    </div>
-              </div>
-              <div class="group">
-                    <div class="news-thumb">
-                          <img src="/static/images/news_thumb.png">
-                    </div>
-                    <div class="news-detail">
-                         <div class="title">
-                           谁才是王者荣耀中真正的王者？
-                         </div>
-                         <div class="desc">
-                              2019年12月7日，中国政法大学昌平校区王者荣耀校内火热开启！各路王者集结!
+                              {{item.abstract}}
                          </div>
                     </div>
               </div>
@@ -58,6 +45,7 @@
 
 <script>
 import tabBar from '@/components/tabBar'
+import { getNewsCategories, getNewsDetailByCategoryId } from '@/api/serverApi'
 export default {
   data () {
     return {
@@ -90,7 +78,8 @@ export default {
           name: '艺术',
           active: false
         }
-      ]
+      ],
+      list: []
     }
   },
 
@@ -102,12 +91,34 @@ export default {
     }
   },
 
-  mounted () {},
+  mounted () {
+    (async () => {
+      const categories = await getNewsCategories()
+      categories.map(item => {
+        item.active = false
+        return item
+      })
+      this.items = categories
+      this.items.unshift({name: '全部', active: true, id: ''})
+      this.getNewsDetail('')
+    })()
+  },
 
   methods: {
-    itemClick (item) {
+    async itemClick (item) {
       this.items.map(item => { item.active = false })
       item.active = true
+      console.log(item.id)
+      this.getNewsDetail(item.id)
+    },
+    async getNewsDetail (id) {
+      this.list = await getNewsDetailByCategoryId({id})
+    },
+    newsItemClick (item, index) {
+      // const { item } = event.currentTarget.dataset
+      // console.log(item)
+      const url = `/pages/newsDetail/main?id=${item.id}`
+      wx.navigateTo({url})
     }
   }
 }
