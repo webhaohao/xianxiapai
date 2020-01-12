@@ -7,5 +7,6 @@
  * @FilePath: \xianxiapai\config\prod.env.js
  */
 module.exports = {
-  NODE_ENV: '"production"'
+  NODE_ENV: '"production"',
+  API_BASE_URL:'"https://www.yishengsoftware.com/api/v1"'
 }
