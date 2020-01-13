@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2019-12-26 10:26:00
- * @LastEditTime : 2020-01-09 18:28:20
+ * @LastEditTime : 2020-01-13 14:40:32
  * @LastEditors  : Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \xianxiapai\src\pages\activityDetails\index.vue

@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2019-12-30 19:38:15
- * @LastEditTime : 2020-01-10 13:02:23
+ * @LastEditTime : 2020-01-13 14:06:25
  * @LastEditors  : Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \xianxiapai\src\api\serverApi.js
@@ -54,4 +54,8 @@ export function getNewsDetailByCategoryId (data) {
 
 export function getNewsDetailById (id) {
   return request(`/news/detail/${id}`, 'get')
+}
+
+export function getAbout () {
+  return request(`/about/get`, 'get')
 }

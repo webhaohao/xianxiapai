@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2020-01-10 12:34:30
- * @LastEditTime : 2020-01-10 13:09:43
+ * @LastEditTime : 2020-01-13 15:04:30
  * @LastEditors  : Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \xianxiapai\src\pages\newsDetail\index.vue
@@ -20,7 +20,7 @@
         <div class="detail">
             <div class="title">{{detail.title}}</div>
             <div class="content">
-                  <wxParse :content="detail.detail" />
+                  <wxParse :content="detail.detail" :loading="loading"/>
             </div>
         </div> 
   </div>
@@ -32,7 +32,8 @@ import {getNewsDetailById} from '@/api/serverApi'
 export default {
   data () {
     return {
-      detail: {}
+      detail: {},
+      loading: true
     }
   },
   components: {wxParse},
@@ -46,6 +47,7 @@ export default {
   methods: {
     async getNewDetailById (id) {
       this.detail = await getNewsDetailById(id)
+      this.loading = false
     }
   }
 }

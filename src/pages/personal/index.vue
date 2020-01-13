@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2019-12-18 15:06:28
- * @LastEditTime : 2019-12-31 17:32:30
+ * @LastEditTime : 2020-01-13 09:59:22
  * @LastEditors  : Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \xianxiapai\src\pages\personal\index.vue
@@ -47,7 +47,7 @@
             </div>
              <div class="about-group">
                   <div class="row">
-                        <div class="item">
+                        <div class="item" @click="clickAbout">
                               <div class="left-con con">
                                     <img src="/static/images/about.png" class="icon">
                                     <span>关于</span>
@@ -79,15 +79,15 @@ export default {
         {
           label: '活动',
           icon: '/static/images/huodong.png'
-        },
-        {
-          label: '兑换',
-          icon: '/static/images/duihuan.png'
-        },
-        {
-          label: '派计划',
-          icon: '/static/images/paijihua.png'
         }
+      //   {
+      //     label: '兑换',
+      //     icon: '/static/images/duihuan.png'
+      //   },
+      //   {
+      //     label: '派计划',
+      //     icon: '/static/images/paijihua.png'
+      //   }
       ]
     }
   },
@@ -105,7 +105,11 @@ export default {
     console.log(this.wxUserInfo)
   },
   methods: {
-    ...mapActions(['_wxGetuserInfo'])
+    ...mapActions(['_wxGetuserInfo']),
+    clickAbout () {
+      const url = `/pages/about/main`
+      wx.navigateTo({url})
+    }
   },
   onShow () {
   }

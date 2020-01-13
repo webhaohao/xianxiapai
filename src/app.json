@@ -8,7 +8,8 @@
     "pages/exChange/main",
     "pages/releaseActi/main",
     "pages/activityDetails/main",
-    "pages/newsDetail/main"
+    "pages/newsDetail/main",
+    "pages/about/main"
   ],
   "window": {
     "backgroundTextStyle": "light",
