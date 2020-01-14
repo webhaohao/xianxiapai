@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2019-12-20 10:22:53
- * @LastEditTime : 2019-12-20 10:27:16
+ * @LastEditTime : 2020-01-14 15:23:44
  * @LastEditors  : Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \xianxiapai\src\pages\exChange\index.vue
@@ -9,68 +9,73 @@
 <!--  -->
 <template>
   <div class="ex-change">
-      <div class="menus">
-            <div class="item" v-for="(item,index) in items" :key="index" @click="itemClick(item)">
-                  <div class="item-c">
-                       <div :class="[{'active':item.active},'icon']">
-                             <i :class="['i-icon','iconfont',item.icon]"></i>
-                       </div>
+      <div v-if="isOpen">
+            <div class="menus">
+                  <div class="item" v-for="(item,index) in items" :key="index" @click="itemClick(item)">
+                        <div class="item-c">
+                        <div :class="[{'active':item.active},'icon']">
+                              <i :class="['i-icon','iconfont',item.icon]"></i>
+                        </div>
+                        </div>
+                        <div class="name">
+                              {{item.name}}
+                        </div>
                   </div>
-                  <div class="name">
-                        {{item.name}}
+                  <div class="item holder" v-for="(i,index) in holder" :key="index">
+                        <div class="item-c">
+                        </div>
+                        <div class="name">
+                        </div>
                   </div>
             </div>
-            <div class="item holder" v-for="(i,index) in holder" :key="index">
-                  <div class="item-c">
-                  </div>
-                  <div class="name">
-                  </div>
+            <div class="ex-change-c">
+                  <van-tabs @change="tabItemChange($event)" :active="active" :border="false">
+                        <van-tab title="按热度">
+                              <div class="cards-c">
+                                    <div class="card">
+                                          <div class="thumb">
+                                                <img src="/static/images/card_1.jpg">
+                                          </div>
+                                          <div class="detail">
+                                                <div class="label">奶茶券</div>
+                                                <div class="info">
+                                                      <img class="icon" src="/static/images/intergral.png">
+                                                      <span class="value">255</span>
+                                                </div>
+                                          </div>
+                                    </div>
+                                    <div class="card">
+                                          <div class="thumb">
+                                                <img src="/static/images/card_1.jpg">
+                                          </div>
+                                          <div class="detail">
+                                                <div class="label">奶茶券</div>
+                                                <div class="info">
+                                                      <img class="icon" src="/static/images/intergral.png">
+                                                      <span class="value">255</span>
+                                                </div>
+                                          </div>
+                                    </div>
+                                    <div class="card">
+                                          <div class="thumb">
+                                                <img src="/static/images/card_1.jpg">
+                                          </div>
+                                          <div class="detail">
+                                                <div class="label">奶茶券</div>
+                                                <div class="info">
+                                                      <img class="icon" src="/static/images/intergral.png">
+                                                      <span class="value">255</span>
+                                                </div>
+                                          </div>
+                                    </div>
+                              </div>
+                        </van-tab>
+                        <van-tab title="按时间">内容 2</van-tab>
+                  </van-tabs>
             </div>
-      </div>
-      <div class="ex-change-c">
-              <van-tabs @change="tabItemChange($event)" :active="active" :border="false">
-                    <van-tab title="按热度">
-                          <div class="cards-c">
-                                <div class="card">
-                                      <div class="thumb">
-                                            <img src="/static/images/card_1.jpg">
-                                      </div>
-                                      <div class="detail">
-                                            <div class="label">奶茶券</div>
-                                            <div class="info">
-                                                  <img class="icon" src="/static/images/intergral.png">
-                                                  <span class="value">255</span>
-                                            </div>
-                                      </div>
-                                </div>
-                                 <div class="card">
-                                      <div class="thumb">
-                                            <img src="/static/images/card_1.jpg">
-                                      </div>
-                                      <div class="detail">
-                                            <div class="label">奶茶券</div>
-                                            <div class="info">
-                                                  <img class="icon" src="/static/images/intergral.png">
-                                                  <span class="value">255</span>
-                                            </div>
-                                      </div>
-                                </div>
-                                 <div class="card">
-                                      <div class="thumb">
-                                            <img src="/static/images/card_1.jpg">
-                                      </div>
-                                      <div class="detail">
-                                            <div class="label">奶茶券</div>
-                                            <div class="info">
-                                                  <img class="icon" src="/static/images/intergral.png">
-                                                  <span class="value">255</span>
-                                            </div>
-                                      </div>
-                                </div>
-                          </div>
-                    </van-tab>
-                    <van-tab title="按时间">内容 2</van-tab>
-              </van-tabs>
+      </div>  
+      <div v-else style="display:flex;justify-content:center;align-items:center;height:100vh;color:#666;">
+                  {{'暂不开放,敬请期待'}}
       </div>
      <tab-bar></tab-bar> 
   </div>
@@ -113,7 +118,8 @@ export default {
           active: false
         }
       ],
-      active: 0
+      active: 0,
+      isOpen: false
     }
   },
 

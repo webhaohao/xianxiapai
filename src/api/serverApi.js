@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2019-12-30 19:38:15
- * @LastEditTime : 2020-01-13 14:06:25
+ * @LastEditTime : 2020-01-14 17:06:39
  * @LastEditors  : Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \xianxiapai\src\api\serverApi.js
@@ -58,4 +58,23 @@ export function getNewsDetailById (id) {
 
 export function getAbout () {
   return request(`/about/get`, 'get')
+}
+
+export function userReleasedActivity () {
+  return request(`/user/released_activity`, 'get')
+}
+export function userJoinActivity () {
+  return request(`/user/join_activity`, 'get')
+}
+
+export function getWxUserInfo () {
+  return request(`/user/wxUserInfo`, 'get')
+}
+
+export function getActivityByKeywords () {
+  return request(`/activity/byKeywords`, 'get')
+}
+
+export function searchActivityByKeywords (data) {
+  return request('/activity/search', 'post', data)
 }

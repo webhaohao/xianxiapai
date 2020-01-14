@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2020-01-13 09:43:34
- * @LastEditTime : 2020-01-13 14:50:59
+ * @LastEditTime : 2020-01-14 09:27:55
  * @LastEditors  : Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \xianxiapai\src\pages\about\index.vue
@@ -44,6 +44,6 @@ export default {
 <style lang='scss' scoped>
 @import url("~mpvue-wxparse/src/wxParse.css");
 .about{
-    padding:20rpx 15rpx;
+    padding:5rpx 15rpx;
 }
 </style>

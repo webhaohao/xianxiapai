@@ -6,7 +6,9 @@
               <div class="logo">
                     <img src="/static/images/logo.png" alt="" class="logoImg">
               </div>
-              <search-box></search-box>
+              <div @click="jumpSearch">
+                    <search-box></search-box>
+              </div>
           </div>
     </div> 
     <div class="vant-tabs-content">
@@ -22,14 +24,11 @@
                 </div>      
                 <div class="list">
                   <van-tabs @change="tabItemChange" :active="tabs_item_active" :border="false">
-                    <van-tab title="按热度">
-                          <card></card>
+                    <van-tab :title="item.title" v-for="(item,index) in filterItems" :key="index">
+                          <card :list ="activity"></card>
                     </van-tab>
-                    <van-tab title="按时间">内容 2</van-tab>
-                    <van-tab title="按距离">内容 3</van-tab>
-                    <van-tab title="按积分">内容 4</van-tab>
                   </van-tabs>
-                  </div>
+                </div>
                 
           </van-tab>
           <van-tab title="个人活动">
@@ -38,7 +37,7 @@
           <van-tab title="组织活动">
                    <card :list ="activity"></card>
           </van-tab>
-          <van-tab title="体育活动">内容 4</van-tab>
+          <!-- <van-tab title="体育活动">内容 4</van-tab> -->
         </van-tabs>
     </div>
     <!-- <van-button>测试</van-button> -->
@@ -52,7 +51,7 @@ import card from '@/components/card'
 import tabBar from '@/components/tabBar'
 import searchBox from '@/components/searchBox'
 import {wxLogin} from '@/api/wxApi'
-import { getToken, getActivitesByScope } from '@/api/serverApi'
+import { getToken, getActivitesByScope, getActivityByKeywords } from '@/api/serverApi'
 // import list from '@/components/list'
 export default {
   components: {
@@ -62,7 +61,18 @@ export default {
     return {
       active: 0,
       tabs_item_active: 0,
-      activity: []
+      activity: [],
+      filterItems: [
+        {
+          title: '按热度'
+        },
+        {
+          title: '按时间'
+        },
+        {
+          title: '按积分'
+        }
+      ]
     }
   },
   methods: {
@@ -90,8 +100,13 @@ export default {
       this.activity = await getActivitesByScope(scope)
       console.log(this.activity)
     },
-    tabItemChange (event) {
+    async tabItemChange (event) {
       console.log(event)
+      this.activity = await getActivityByKeywords()
+    },
+    jumpSearch () {
+      const url = `/pages/search/main`
+      wx.navigateTo({url})
     }
   },
   created () {
@@ -103,10 +118,10 @@ export default {
       console.log('code', code)
       const tokenResult = await getToken({code})
       wx.setStorageSync('token', tokenResult.token)
-      console.log(tokenResult)
     })()
   },
-  mounted () {
+  async mounted () {
+    this.activity = await getActivityByKeywords()
   }
 }
 </script>

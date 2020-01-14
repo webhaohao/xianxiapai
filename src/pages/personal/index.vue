@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2019-12-18 15:06:28
- * @LastEditTime : 2020-01-13 09:59:22
+ * @LastEditTime : 2020-01-14 14:19:26
  * @LastEditors  : Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \xianxiapai\src\pages\personal\index.vue
@@ -26,15 +26,15 @@
                                     <span>积分</span>
                               </div>
                               <div class="right-con con">
-                                    <span>100派币</span>
-                                    <img src="/static/images/arrow.png" class="icon">      
+                                    <span>{{userInfo.integral}}</span>
+                                    <!-- <img src="/static/images/arrow.png" class="icon">       -->
                               </div>
                         </div>
                   </div>
             </div>
             <div class="items">
                      <div class="row" v-for ="(item,index) in items" :key="index">
-                        <div class="item">
+                        <div class="item" @click="itemClick(item)">
                               <div class="left-con con">
                                     <img :src="item.icon" class="icon">
                                     <span>{{item.label}}</span>
@@ -68,6 +68,7 @@
 import tabBar from '@/components/tabBar'
 import auth from '@/components/auth'
 import { mapActions, mapState } from 'vuex'
+import { getWxUserInfo } from '@/api/serverApi'
 export default {
   components: {
     tabBar,
@@ -78,7 +79,8 @@ export default {
       items: [
         {
           label: '活动',
-          icon: '/static/images/huodong.png'
+          icon: '/static/images/huodong.png',
+          path: '/pages/myActivity/main'
         }
       //   {
       //     label: '兑换',
@@ -88,7 +90,8 @@ export default {
       //     label: '派计划',
       //     icon: '/static/images/paijihua.png'
       //   }
-      ]
+      ],
+      userInfo: {}
     }
   },
   computed: {
@@ -100,15 +103,18 @@ export default {
   created () {
 
   },
-  mounted () {
-    this._wxGetuserInfo()
-    console.log(this.wxUserInfo)
+  async mounted () {
+    await this._wxGetuserInfo()
+    this.userInfo = await getWxUserInfo()
   },
   methods: {
     ...mapActions(['_wxGetuserInfo']),
     clickAbout () {
       const url = `/pages/about/main`
       wx.navigateTo({url})
+    },
+    itemClick (item) {
+      wx.navigateTo({url: item.path})
     }
   },
   onShow () {

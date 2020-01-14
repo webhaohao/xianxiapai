@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2019-12-26 10:26:00
- * @LastEditTime : 2020-01-13 14:40:32
+ * @LastEditTime : 2020-01-14 09:20:52
  * @LastEditors  : Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \xianxiapai\src\pages\activityDetails\index.vue
@@ -99,7 +99,7 @@
             <div class="activity-detail">
                     <div class="title"><span class="icon iconfont icon-tishi"></span>活动详情</div>
                     <div class="detail-c">
-                            <wxParse :content="activityItem.detail" />
+                            <wxParse :content="activityItem.detail" :loading="loading" />
                     </div>
                     <div class="detail-imgs">
                             <div class="img"  v-for="(item,index) in activityItem.items" :key="index">
@@ -147,7 +147,8 @@ export default {
       buttonText: '报名',
       disabled: false,
       swiperItem: 3,
-      users: []
+      users: [],
+      loading: true
     }
   },
 
@@ -187,6 +188,7 @@ export default {
         this.users = this.activityItem.users
         console.log('users', this.users)
         const {isExist} = await checkUserIsJoinActivity(id)
+        this.loading = false
         if (isExist) {
           this.buttonText = '已报名'
           this.disabled = true
