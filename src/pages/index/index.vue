@@ -4,7 +4,7 @@
           <img src="/static/images/header.jpg" alt="" class="header_bg">
           <div class="content">
               <div class="logo">
-                    <img src="/static/images/logo.png" alt="" class="logoImg">
+                    <img src="/static/images/logo.png" alt="" mode="aspectFill"  class="logoImg">
               </div>
               <div @click="jumpSearch">
                     <search-box></search-box>
@@ -18,26 +18,29 @@
             :border="false" 
              swipeable
           >
-          <van-tab title="热门搜索">
-                <div class="banner">
-                      <img src="/static/images/banner.png" alt="">
-                </div>      
-                <div class="list">
-                  <van-tabs @change="tabItemChange" :active="tabs_item_active" :border="false">
-                    <van-tab :title="item.title" v-for="(item,index) in filterItems" :key="index">
-                          <card :list ="activity"></card>
-                    </van-tab>
-                  </van-tabs>
-                </div>
+          <!-- <van-tab title="热门搜索">
                 
+                
+          </van-tab> -->
+          <van-tab :title="item.name" v-for="(item,index) in activityType" :key="index">
+                  <block v-if="item.name === '热门搜索'">
+                    <div class="banner">
+                          <img src="/static/images/banner1.jpg" alt="">
+                    </div>      
+                    <div class="list">
+                      <van-tabs @change="tabItemChange" :active="tabs_item_active" :border="false">
+                        <van-tab :title="o.title" v-for="(o,i) in filterItems" :key="i">
+                              <card :list ="activity"></card>
+                        </van-tab>
+                      </van-tabs>
+                    </div>
+                  </block>
+                  <block v-else>
+                    <div>
+                        <card :list ="activity"></card>
+                    </div>
+                  </block>
           </van-tab>
-          <van-tab title="个人活动">
-                  <card :list ="activity"></card>
-          </van-tab>
-          <van-tab title="组织活动">
-                   <card :list ="activity"></card>
-          </van-tab>
-          <!-- <van-tab title="体育活动">内容 4</van-tab> -->
         </van-tabs>
     </div>
     <!-- <van-button>测试</van-button> -->
@@ -51,7 +54,7 @@ import card from '@/components/card'
 import tabBar from '@/components/tabBar'
 import searchBox from '@/components/searchBox'
 import {wxLogin} from '@/api/wxApi'
-import { getToken, getActivitesByScope, getActivityByKeywords } from '@/api/serverApi'
+import { getToken, getActivitesByScope, getActivityByKeywords, getAllActivityType } from '@/api/serverApi'
 // import list from '@/components/list'
 export default {
   components: {
@@ -62,6 +65,7 @@ export default {
       active: 0,
       tabs_item_active: 0,
       activity: [],
+      activityType: [],
       filterItems: [
         {
           title: '按热度'
@@ -121,6 +125,12 @@ export default {
     })()
   },
   async mounted () {
+    this.activityType = await getAllActivityType()
+    this.activityType.splice(0, 0, {
+      name: '热门搜索',
+      scope: 0
+    })
+    console.log(this.activityType)
     this.activity = await getActivityByKeywords()
   }
 }

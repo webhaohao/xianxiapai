@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2019-12-30 19:38:15
- * @LastEditTime : 2020-01-14 17:06:39
+ * @LastEditTime : 2020-01-16 18:51:40
  * @LastEditors  : Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \xianxiapai\src\api\serverApi.js
@@ -77,4 +77,8 @@ export function getActivityByKeywords () {
 
 export function searchActivityByKeywords (data) {
   return request('/activity/search', 'post', data)
+}
+
+export function getAllActivityType () {
+  return request('/activityType/all', 'get')
 }
