@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2019-12-26 10:26:00
- * @LastEditTime : 2020-01-14 09:20:52
+ * @LastEditTime : 2020-01-18 22:44:59
  * @LastEditors  : Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \xianxiapai\src\pages\activityDetails\index.vue
@@ -121,12 +121,28 @@
             :disabled="disabled"
         >
           <div class="is-agree">
-              <van-checkbox :value="isAgree" @change="checkboxChange" checked-color="#90cb93">
-                  请勾选线下派用户协议
+              <van-checkbox :value="isAgree" @change="checkboxChange" checked-color="#00b1e2">
+                 我同意
               </van-checkbox>
+             <span @click="handleAgree">《线下派用户协议》</span>
           </div>
+           <!-- <div slot="tip" class="tip">
+              <van-icon name="warning-o"/>
+              <div class="tip-text">报名前,请阅读<span>线下派用户协议</span></div>
+            </div> -->
         </van-submit-bar>
         <van-toast id="van-toast" />
+        <van-dialog
+            use-slot
+            title="线下派用户协议"
+            :show="dialogShow"
+            show-confirm-button
+            @confirm="onConfirm"
+            @close="onClose"
+            :closeOnClickOverlay="true"
+          >
+           <wxParse :content="activityItem.detail"/>
+        </van-dialog>
   </div>
 </template>
 
@@ -148,7 +164,8 @@ export default {
       disabled: false,
       swiperItem: 3,
       users: [],
-      loading: true
+      loading: true,
+      dialogShow: false
     }
   },
 
@@ -202,7 +219,6 @@ export default {
       this.isLoading = true
       const result = await joinActivity({activityId: this.activityItem.id})
       if (result.code === 201) {
-        console.log('报名成功')
         Toast.success('报名成功')
         const {id} = this.$root.$mp.query
         // this.activityItem = null
@@ -213,6 +229,18 @@ export default {
     },
     checkboxChange (event) {
       this.isAgree = !this.isAgree
+    },
+    handleAgree () {
+      console.log(this.dialogShow)
+      this.dialogShow = true
+    },
+    onConfirm () {
+      console.log('comfirm')
+      this.dialogShow = false
+    },
+    onClose () {
+      console.log('sure')
+      this.dialogShow = false
     }
   }
 }
@@ -320,6 +348,10 @@ export default {
 }
 .is-agree{
     padding-right:30rpx;
+    display:flex;
+    span{
+        color:#00b1e2;
+    }
 }
 .join-user-list {
        display:flex;
@@ -360,5 +392,12 @@ export default {
               margin-right:0rpx;
           }
      }
+}
+.tip{
+    display:flex;
+    align-items:center;
+    .tip-text{
+        margin-left:10rpx;
+    }
 }
 </style>

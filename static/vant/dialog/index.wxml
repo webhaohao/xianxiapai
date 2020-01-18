@@ -33,7 +33,7 @@
       class="van-dialog__button van-hairline--right"
       custom-class="van-dialog__cancel"
       custom-style="color: {{ cancelButtonColor }}"
-      bind:click="onCancel"
+      bind:vclick="onCancel"
     >
       {{ cancelButtonText }}
     </van-button>
@@ -55,7 +55,7 @@
       show-message-card="{{ showMessageCard }}"
       app-parameter="{{ appParameter }}"
 
-      bind:click="onConfirm"
+      bind:vclick="onConfirm"
       bindgetuserinfo="bindGetUserInfo"
       bindcontact="bindContact"
       bindgetphonenumber="bindGetPhoneNumber"

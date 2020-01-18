@@ -20,8 +20,8 @@ export function createActivity (data) {
   return request('/create_activity', 'post', data)
 }
 
-export function getActivitesByScope (scope) {
-  return request(`/activity/by_scope/${scope}`, 'get')
+export function getActivitesByActivityTypeId (data) {
+  return request(`/activity/byActivityType`, 'get', data)
 }
 export function getCategoryByAccId (categoryId) {
   return request('/category/by_accid', 'get', categoryId)
@@ -81,4 +81,8 @@ export function searchActivityByKeywords (data) {
 
 export function getAllActivityType () {
   return request('/activityType/all', 'get')
+}
+
+export function getBanner (id) {
+  return request(`/banner/${id}`, 'get')
 }

@@ -9,6 +9,7 @@
     "van-icon": "/static/vant/icon/index",
     "van-image": "/static/vant/image/index",
     "van-submit-bar":"/static/vant/submit-bar/index",
+    "van-dialog": "/static/vant/dialog/index",
     "van-icon": "/static/vant/icon/index",
     "van-divider": "/static/vant/divider/index",
     "van-checkbox": "/static/vant/checkbox/index",

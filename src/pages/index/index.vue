@@ -18,14 +18,30 @@
             :border="false" 
              swipeable
           >
-          <!-- <van-tab title="热门搜索">
-                
-                
-          </van-tab> -->
-          <van-tab :title="item.name" v-for="(item,index) in activityType" :key="index">
+          <van-tab :title="item.name" 
+                   v-for="(item,index) in activityType" 
+                   :key="index"
+          >
                   <block v-if="item.name === '热门搜索'">
                     <div class="banner">
-                          <img src="/static/images/banner1.jpg" alt="">
+                         <swiper
+                                  class="swiper-contaner"
+                                  :indicator-dots="false"
+                                  :autoplay="true"
+                                  :duration='1500'
+                                  :circular="true"
+                                  :current="swiperCurrentIndex"
+                                >
+                                <block >
+                                    <swiper-item v-for="(banneritem,i) in bannerItems" :key="i" @click="bannerItemClick(banneritem)">
+                                          <img              
+                                              class='slide-image' 
+                                              mode='aspectFit' 
+                                              :src="banneritem.img.url" 
+                                          />
+                                    </swiper-item>   
+                                </block>  
+                            </swiper>  
                     </div>      
                     <div class="list">
                       <van-tabs @change="tabItemChange" :active="tabs_item_active" :border="false">
@@ -54,7 +70,7 @@ import card from '@/components/card'
 import tabBar from '@/components/tabBar'
 import searchBox from '@/components/searchBox'
 import {wxLogin} from '@/api/wxApi'
-import { getToken, getActivitesByScope, getActivityByKeywords, getAllActivityType } from '@/api/serverApi'
+import { getToken, getActivitesByActivityTypeId, getActivityByKeywords, getAllActivityType, getBanner } from '@/api/serverApi'
 // import list from '@/components/list'
 export default {
   components: {
@@ -64,8 +80,10 @@ export default {
     return {
       active: 0,
       tabs_item_active: 0,
+      bannerItems: [],
       activity: [],
       activityType: [],
+      swiperCurrentIndex: 0,
       filterItems: [
         {
           title: '按热度'
@@ -94,19 +112,30 @@ export default {
     },
     async onChange (event) {
       console.log(event)
-      const title = event.target.title
-      let scope = 16
-      if (title === '个人活动') {
-        scope = 16
-      } else if (title === '组织活动') {
-        scope = 32
+      const {index} = event.mp.detail
+      if (index === 0) {
+        return false
+      } else {
+        const {id} = this.activityType[index]
+        const result = await getActivitesByActivityTypeId({id, page: 1, size: 10})
+        this.activity = result.data
       }
-      this.activity = await getActivitesByScope(scope)
-      console.log(this.activity)
+      console.log(index)
+      // let scope = 16
+      // if (title === '个人活动') {
+      //   scope = 16
+      // } else if (title === '组织活动') {
+      //   scope = 32
+      // }
     },
     async tabItemChange (event) {
       console.log(event)
       this.activity = await getActivityByKeywords()
+    },
+    bannerItemClick (item) {
+      console.log(item)
+      const url = `/pages/activityDetails/main?id=${item.key_word}`
+      wx.navigateTo({url})
     },
     jumpSearch () {
       const url = `/pages/search/main`
@@ -132,6 +161,8 @@ export default {
     })
     console.log(this.activityType)
     this.activity = await getActivityByKeywords()
+    const result = await getBanner(1)
+    this.bannerItems = result.items
   }
 }
 </script>
@@ -187,5 +218,8 @@ export default {
 }
 .list >>> .van-tabs__line{
     background:#97cc92;
+}
+.banner swiper{
+   height:418rpx;
 }
 </style>

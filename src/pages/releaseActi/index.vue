@@ -205,7 +205,8 @@ export default {
       tempFilePaths: '',
       categories: [],
       isLoading: false,
-      disabled: false
+      disabled: false,
+      activity_type_id: 0
     }
   },
 
@@ -222,7 +223,9 @@ export default {
   },
   mounted () {
     (async () => {
-      this.categories = await getAllCategories()
+      const result = await getAllCategories()
+      this.categories = result.items
+      this.activity_type_id = result.id
       const index = this.formData.findIndex((item) => item.fieldId === 'categories')
       console.log(this.categories.map(item => item.name))
       console.log(this.formData[index].options)
@@ -251,7 +254,12 @@ export default {
         this.disabled = true
         let serverData = dataToserverData(this.formData)
         const currentCategory = this.categories.filter(item => item.name === serverData.categories)[0]
-        Object.assign(serverData, {main_img_url: this.tempFilePaths}, {detail_imgs: this.fileList}, {category_id: currentCategory.id})
+        Object.assign(serverData,
+          {main_img_url: this.tempFilePaths},
+          {detail_imgs: this.fileList},
+          {category_id: currentCategory.id},
+          {activity_type_id: this.activity_type_id}
+        )
         console.log(serverData)
         const result = await createActivity(serverData)
         console.log(result)
