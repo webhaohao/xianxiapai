@@ -45,12 +45,34 @@
                             </swiper>  
                     </div>      
                   </block>
+                    <block v-if="item.name === '体育圈'">
+                    <div class="banner">
+                         <swiper
+                                  class="swiper-contaner"
+                                  :indicator-dots="false"
+                                  :autoplay="true"
+                                  :duration='1500'
+                                  :circular="true"
+                                  :current="swiperCurrentIndex"
+                                >
+                                <block >
+                                    <swiper-item v-for="(banneritem,i) in tYbannerItems" :key="i" @click="bannerItemClick(banneritem)">
+                                          <img              
+                                              class='slide-image' 
+                                              mode='aspectFit' 
+                                              :src="banneritem.img.url" 
+                                          />
+                                    </swiper-item>   
+                                </block>  
+                            </swiper>  
+                    </div>      
+                  </block>
           </van-tab>
         </van-tabs>
         <div class="list">
           <div class="tabs">
             <van-tabs @change="tabItemChange" :active="tabs_item_active" :border="false">
-              <div class="icon" slot="nav-right" @click="iconTypeClick" v-if="isShowIconType">
+              <div class="icon" slot="nav-right" @click="iconTypeClick">
                   <van-icon name="apps-o" size="25px" color="#00b1e2"/>
               </div>
               <van-tab :title="o.title" v-for="(o,i) in filterItems" :key="i" :name="o.title">
@@ -98,6 +120,7 @@ export default {
     return {
       active: '',
       bannerItems: [],
+      tYbannerItems: [],
       activity: [],
       visiblePopup: false,
       activityType: [],
@@ -113,7 +136,10 @@ export default {
         {
           title: '按积分'
         }
-      ]
+      ],
+      page: 1,
+      size: 10,
+      id: ''
     }
   },
   computed: {
@@ -145,17 +171,18 @@ export default {
       this.active = event.mp.detail.name
       const {index} = event.mp.detail
       if (index === 0) {
-        return false
+        this.id = ''
       } else {
-        const {id} = this.activityType[index]
-        const result = await getActivitesByActivityTypeId({id, page: 1, size: 10})
-        this.activity = result.data
+        this.id = this.activityType[index].id
       }
       console.log(index)
     },
     async tabItemChange (event) {
       console.log(event)
-      this.activity = await getActivityByKeywords()
+      // this.activity = await getActivityByKeywords()
+      const result = await getActivitesByActivityTypeId({id: this.id, page: this.page, size: this.size})
+      this.activity = result.data
+      this.total = result.total
     },
     clickOverlay () {
       this.visiblePopup = false
@@ -173,8 +200,13 @@ export default {
   onPullDownRefresh () {
     console.log('下拉刷新')
   },
-  onReachBottom () {
+  async onReachBottom () {
     console.log('上拉加载')
+    if (this.activity.length < this.total) {
+      this.page++
+      const result = await getActivitesByActivityTypeId({id: this.id, page: this.page, size: this.size})
+      this.activity.push(...result.data)
+    }
   },
   created () {
     const baseURL = process.env.API_BASE_URL
@@ -198,6 +230,8 @@ export default {
     this.activity = await getActivityByKeywords()
     const result = await getBanner(1)
     this.bannerItems = result.items
+    const tyResult = await getBanner(3)
+    this.tYbannerItems = tyResult.items
   }
 }
 </script>

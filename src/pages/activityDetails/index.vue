@@ -121,27 +121,33 @@
             :disabled="disabled"
         >
           <div class="is-agree">
-              <van-checkbox :value="isAgree" @change="checkboxChange" checked-color="#00b1e2">
+              <van-checkbox :value="isAgree" @change="checkboxChange" checked-color="#00b1e2" :disabled="disabled">
                  我同意
               </van-checkbox>
              <span @click="handleAgree">《线下派用户协议》</span>
           </div>
-           <!-- <div slot="tip" class="tip">
+           <div slot="tip" class="tip" v-if="!isAgree">
               <van-icon name="warning-o"/>
-              <div class="tip-text">报名前,请阅读<span>线下派用户协议</span></div>
-            </div> -->
+              <div class="tip-text">报名前,请阅读并勾选<span>线下派用户协议</span></div>
+            </div>
         </van-submit-bar>
         <van-toast id="van-toast" />
         <van-dialog
             use-slot
             title="线下派用户协议"
             :show="dialogShow"
-            show-confirm-button
             @confirm="onConfirm"
             @close="onClose"
             :closeOnClickOverlay="true"
+            custom-style="height:80%"
           >
-           <wxParse :content="activityItem.detail"/>
+          <scroll-view scroll-y style="height:90%">
+                <div class="user-agreement">
+                
+                  <wxParse :content="userAgreement"/>
+                
+                </div>
+          </scroll-view>
         </van-dialog>
   </div>
 </template>
@@ -150,7 +156,7 @@
 import wxParse from 'mpvue-wxparse'
 import { mapState } from 'vuex'
 import Toast from '@/../static/vant/toast/toast'
-import { getCategoryByAccId, getActivityDetailById, checkUserIsJoinActivity, joinActivity } from '@/api/serverApi'
+import { getCategoryByAccId, getActivityDetailById, checkUserIsJoinActivity, joinActivity, getUserAgreement } from '@/api/serverApi'
 export default {
   data () {
     return {
@@ -165,7 +171,9 @@ export default {
       swiperItem: 3,
       users: [],
       loading: true,
-      dialogShow: false
+      dialogShow: false,
+      tipShow: false,
+      userAgreement: ''
     }
   },
 
@@ -209,6 +217,7 @@ export default {
         if (isExist) {
           this.buttonText = '已报名'
           this.disabled = true
+          this.isAgree = true
         } else {
           this.buttonText = '报名'
           this.disabled = false
@@ -216,6 +225,9 @@ export default {
       })()
     },
     async onSubmit () {
+      if (!this.isAgree) {
+        return false
+      }
       this.isLoading = true
       const result = await joinActivity({activityId: this.activityItem.id})
       if (result.code === 201) {
@@ -230,8 +242,11 @@ export default {
     checkboxChange (event) {
       this.isAgree = !this.isAgree
     },
-    handleAgree () {
+    async handleAgree () {
       console.log(this.dialogShow)
+      const result = await getUserAgreement()
+      console.log(result)
+      this.userAgreement = result.description
       this.dialogShow = true
     },
     onConfirm () {
@@ -399,5 +414,8 @@ export default {
     .tip-text{
         margin-left:10rpx;
     }
+}
+.user-agreement{
+    padding:10rpx;
 }
 </style>

@@ -60,6 +60,9 @@ export function getAbout () {
   return request(`/about/get`, 'get')
 }
 
+export function getUserAgreement () {
+  return request(`/userAgreement/get`, 'get')
+}
 export function userReleasedActivity () {
   return request(`/user/released_activity`, 'get')
 }
