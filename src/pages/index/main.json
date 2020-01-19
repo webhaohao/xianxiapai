@@ -1,8 +1,13 @@
 {
+  "enablePullDownRefresh": true, 
   "usingComponents": {
     "van-button": "/static/vant/button/index",
     "van-tab": "/static/vant/tab/index",
     "van-tabs": "/static/vant/tabs/index",
-    "van-icon": "/static/vant/icon/index"
+    "van-icon": "/static/vant/icon/index",
+    "van-popup": "/static/vant/popup/index",
+    "van-divider": "/static/vant/divider/index",
+    "van-grid": "/static/vant/grid/index",
+    "van-grid-item": "/static/vant/grid-item/index"
   }
  }

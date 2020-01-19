@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2019-12-03 18:35:21
- * @LastEditTime : 2020-01-08 13:34:09
+ * @LastEditTime : 2020-01-19 14:52:35
  * @LastEditors  : Please set LastEditors
  * @Description: In User Settings Edit  
  * @FilePath: \xianxiapai\src\components\card.vue
@@ -51,6 +51,33 @@ export default {
       type: Array,
       default: () => {
         return [
+          {
+            main_img_url: '/static/images/card_1.jpg',
+            title: '谁才是王者荣耀中真的的王者',
+            start_time: '2019-12-03',
+            end_time: '2019-12-03',
+            number: '12'
+          },
+          {
+            main_img_url: '/static/images/card_1.jpg',
+            title: '谁才是王者荣耀中真的的王者',
+            start_time: '2019-12-03',
+            end_time: '2019-12-03',
+            number: '12'
+          },
+          {
+            main_img_url: '/static/images/card_1.jpg',
+            title: '谁才是王者荣耀中真的的王者',
+            start_time: '2019-12-03',
+            end_time: '2019-12-03',
+            number: '12'
+          }, {
+            main_img_url: '/static/images/card_1.jpg',
+            title: '谁才是王者荣耀中真的的王者',
+            start_time: '2019-12-03',
+            end_time: '2019-12-03',
+            number: '12'
+          },
           {
             main_img_url: '/static/images/card_1.jpg',
             title: '谁才是王者荣耀中真的的王者',

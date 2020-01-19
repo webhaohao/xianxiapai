@@ -21,6 +21,7 @@
           <van-tab :title="item.name" 
                    v-for="(item,index) in activityType" 
                    :key="index"
+                   :name="item.name"
           >
                   <block v-if="item.name === '热门搜索'">
                     <div class="banner">
@@ -43,22 +44,39 @@
                                 </block>  
                             </swiper>  
                     </div>      
-                    <div class="list">
-                      <van-tabs @change="tabItemChange" :active="tabs_item_active" :border="false">
-                        <van-tab :title="o.title" v-for="(o,i) in filterItems" :key="i">
-                              <card :list ="activity"></card>
-                        </van-tab>
-                      </van-tabs>
-                    </div>
-                  </block>
-                  <block v-else>
-                    <div>
-                        <card :list ="activity"></card>
-                    </div>
                   </block>
           </van-tab>
         </van-tabs>
+        <div class="list">
+          <div class="tabs">
+            <van-tabs @change="tabItemChange" :active="tabs_item_active" :border="false">
+              <div class="icon" slot="nav-right" @click="iconTypeClick" v-if="isShowIconType">
+                  <van-icon name="apps-o" size="25px" color="#00b1e2"/>
+              </div>
+              <van-tab :title="o.title" v-for="(o,i) in filterItems" :key="i" :name="o.title">
+                    <card :list ="activity"></card>
+              </van-tab>
+            </van-tabs>
+          </div>
+       
+        </div>
     </div>
+    <van-popup
+        :show="visiblePopup"
+        position="center"
+        custom-style="width:80%;"
+        round
+        @clickOverlay="clickOverlay"
+        @close="onClose"
+    >
+        <div class="activity-category">
+              <van-divider contentPosition="center">活动类型</van-divider>
+              <van-grid column-num="3" :border="false">
+                <van-grid-item use-slot>
+                </van-grid-item>
+              </van-grid>
+        </div>
+    </van-popup>
     <!-- <van-button>测试</van-button> -->
     <tab-bar :tabbar="tabbar"></tab-bar>
   </div>
@@ -78,12 +96,13 @@ export default {
   },
   data () {
     return {
-      active: 0,
-      tabs_item_active: 0,
+      active: '',
       bannerItems: [],
       activity: [],
+      visiblePopup: false,
       activityType: [],
       swiperCurrentIndex: 0,
+      tabs_item_active: '按热度',
       filterItems: [
         {
           title: '按热度'
@@ -95,6 +114,11 @@ export default {
           title: '按积分'
         }
       ]
+    }
+  },
+  computed: {
+    isShowIconType () {
+      return this.active !== '热门搜索'
     }
   },
   methods: {
@@ -110,8 +134,15 @@ export default {
       console.log('clickHandle:', ev)
       // throw {message: 'custom test'}
     },
+    iconTypeClick () {
+      console.log('iconTypeClick')
+      this.visiblePopup = true
+    },
     async onChange (event) {
+      console.log('activityType', this.activityType)
       console.log(event)
+      // console.log(this.active)
+      this.active = event.mp.detail.name
       const {index} = event.mp.detail
       if (index === 0) {
         return false
@@ -121,16 +152,13 @@ export default {
         this.activity = result.data
       }
       console.log(index)
-      // let scope = 16
-      // if (title === '个人活动') {
-      //   scope = 16
-      // } else if (title === '组织活动') {
-      //   scope = 32
-      // }
     },
     async tabItemChange (event) {
       console.log(event)
       this.activity = await getActivityByKeywords()
+    },
+    clickOverlay () {
+      this.visiblePopup = false
     },
     bannerItemClick (item) {
       console.log(item)
@@ -141,6 +169,12 @@ export default {
       const url = `/pages/search/main`
       wx.navigateTo({url})
     }
+  },
+  onPullDownRefresh () {
+    console.log('下拉刷新')
+  },
+  onReachBottom () {
+    console.log('上拉加载')
   },
   created () {
     const baseURL = process.env.API_BASE_URL
@@ -159,6 +193,7 @@ export default {
       name: '热门搜索',
       scope: 0
     })
+    this.active = this.activityType[0].name
     console.log(this.activityType)
     this.activity = await getActivityByKeywords()
     const result = await getBanner(1)
@@ -213,6 +248,19 @@ export default {
     width:750rpx;
     height:418rpx;
 }
+.list{
+    display:flex;
+    align-items:center;
+}
+.list>.tabs{
+    flex:1;
+}
+.list .icon{
+    display:flex;
+    align-items:center;
+    width:10%;
+    justify-content:left;
+}
 .list >>> .van-tab{
     color:#666;
 }
@@ -221,5 +269,8 @@ export default {
 }
 .banner swiper{
    height:418rpx;
+}
+.activity-category{
+  padding:5rpx 10rpx;
 }
 </style>
