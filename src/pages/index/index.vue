@@ -109,7 +109,7 @@ import card from '@/components/card'
 import tabBar from '@/components/tabBar'
 import searchBox from '@/components/searchBox'
 import {wxLogin} from '@/api/wxApi'
-import { getToken, getActivitesByActivityTypeId, getCategoryByActivityTypeId, getAllActivityType, getBanner } from '@/api/serverApi'
+import { getToken, getActivitesByFilter, getCategoryByActivityTypeId, getAllActivityType, getBanner } from '@/api/serverApi'
 // import list from '@/components/list'
 export default {
   components: {
@@ -140,7 +140,8 @@ export default {
       page: 1,
       size: 10,
       id: '',
-      alreadyId: -1
+      alreadyId: -1,
+      categoryId: 0
     }
   },
   computed: {
@@ -165,7 +166,6 @@ export default {
       // throw {message: 'custom test'}
     },
     async iconTypeClick () {
-      console.log('iconTypeClick')
       if (this.active === '热门搜索') {
         return false
       }
@@ -177,7 +177,6 @@ export default {
         })
         this.categories.unshift({id: 0, name: '全部', active: true})
       }
-      this._loadData()
       this.alreadyId = this.id
       this.visiblePopup = true
     },
@@ -189,18 +188,27 @@ export default {
       } else {
         this.id = this.activityType[index].id
       }
+      this._loadData()
     },
     async _loadData () {
       const result = await this.getActivityByfilter()
-      console.log(result)
       this.activity = result.data
       this.total = result.total
     },
     tabItemChange (event) {
+      this.tabs_item_active = event.target.name
+      console.log(event)
       this._loadData()
     },
     async getActivityByfilter () {
-      const result = await getActivitesByActivityTypeId({id: this.id, page: this.page, size: this.size})
+      const result = await getActivitesByFilter(
+        {
+          id: this.id,
+          tabs_item_active: this.tabs_item_active,
+          categoryId: this.categoryId,
+          page: this.page,
+          size: this.size
+        })
       return result
     },
     clickOverlay () {
@@ -216,13 +224,14 @@ export default {
       wx.navigateTo({url})
     },
     async filterItemClick (item, index) {
-      // console.log(item)
       this.categories.map(item => {
         item.active = false
       })
       item.active = true
+      this.categoryId = item.id
       this.$set(this.categories, index, item)
-      console.log(this.categories)
+      this.visiblePopup = false
+      this._loadData()
     }
   },
   onPullDownRefresh () {
@@ -254,6 +263,7 @@ export default {
       name: '热门搜索',
       scope: 0
     })
+    this.id = this.activityType[0].id
     this.active = this.activityType[0].name
     this._loadData()
     const result = await getBanner(1)

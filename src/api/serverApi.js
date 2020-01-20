@@ -20,8 +20,8 @@ export function createActivity (data) {
   return request('/create_activity', 'post', data)
 }
 
-export function getActivitesByActivityTypeId (data) {
-  return request(`/activity/byActivityType`, 'get', data)
+export function getActivitesByFilter (data) {
+  return request(`/activity/filter`, 'post', data)
 }
 export function getCategoryByAccId (categoryId) {
   return request('/category/by_accid', 'get', categoryId)

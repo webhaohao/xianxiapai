@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2019-12-26 10:26:00
- * @LastEditTime : 2020-01-18 22:44:59
+ * @LastEditTime : 2020-01-20 22:17:06
  * @LastEditors  : Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \xianxiapai\src\pages\activityDetails\index.vue
@@ -156,7 +156,7 @@
 import wxParse from 'mpvue-wxparse'
 import { mapState } from 'vuex'
 import Toast from '@/../static/vant/toast/toast'
-import { getCategoryByAccId, getActivityDetailById, checkUserIsJoinActivity, joinActivity, getUserAgreement } from '@/api/serverApi'
+import { getActivityDetailById, checkUserIsJoinActivity, joinActivity, getUserAgreement } from '@/api/serverApi'
 export default {
   data () {
     return {
@@ -207,11 +207,8 @@ export default {
     init (id) {
       (async () => {
         this.activityItem = await getActivityDetailById(id)
-        this.categroyInfo = await getCategoryByAccId({
-          categoryId: this.activityItem.category_id
-        })
+        this.categroyInfo = this.activityItem.category
         this.users = this.activityItem.users
-        console.log('users', this.users)
         const {isExist} = await checkUserIsJoinActivity(id)
         this.loading = false
         if (isExist) {
