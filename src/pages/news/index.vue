@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2019-12-19 14:13:18
- * @LastEditTime : 2020-01-10 12:52:12
+ * @LastEditTime : 2020-01-20 18:12:05
  * @LastEditors  : Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \xianxiapai\src\pages\news\index.vue
@@ -108,7 +108,6 @@ export default {
     async itemClick (item) {
       this.items.map(item => { item.active = false })
       item.active = true
-      console.log(item.id)
       this.getNewsDetail(item.id)
     },
     async getNewsDetail (id) {

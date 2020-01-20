@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2019-12-30 19:38:15
- * @LastEditTime : 2020-01-16 18:51:40
+ * @LastEditTime : 2020-01-20 16:52:54
  * @LastEditors  : Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \xianxiapai\src\api\serverApi.js
@@ -25,6 +25,10 @@ export function getActivitesByActivityTypeId (data) {
 }
 export function getCategoryByAccId (categoryId) {
   return request('/category/by_accid', 'get', categoryId)
+}
+
+export function getCategoryByActivityTypeId (activityTypeId) {
+  return request('/category/byActivityTypeId', 'get', activityTypeId)
 }
 
 export function updateWxUserInfo (data) {

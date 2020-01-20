@@ -45,7 +45,7 @@
                             </swiper>  
                     </div>      
                   </block>
-                    <block v-if="item.name === '体育圈'">
+                  <block v-if="item.name === '体育圈'">
                     <div class="banner">
                          <swiper
                                   class="swiper-contaner"
@@ -69,19 +69,18 @@
                   </block>
           </van-tab>
         </van-tabs>
-        <div class="list">
-          <div class="tabs">
-            <van-tabs @change="tabItemChange" :active="tabs_item_active" :border="false">
-              <div class="icon" slot="nav-right" @click="iconTypeClick">
-                  <van-icon name="apps-o" size="25px" color="#00b1e2"/>
-              </div>
-              <van-tab :title="o.title" v-for="(o,i) in filterItems" :key="i" :name="o.title">
-                    <card :list ="activity"></card>
-              </van-tab>
-            </van-tabs>
+         <div class="list">
+                <div class="tabs">
+                  <van-tabs @change="tabItemChange" :active="tabs_item_active" :border="false">
+                    <div class="icon" slot="nav-right" @click="iconTypeClick">
+                        <van-icon name="apps-o" size="25px" :color="filterIconColor"/>
+                    </div>
+                    <van-tab :title="o.title" v-for="(o,i) in filterItems" :key="i" :name="o.title">
+                          <card :list ="activity"></card>
+                    </van-tab>
+                  </van-tabs>
+                </div>
           </div>
-       
-        </div>
     </div>
     <van-popup
         :show="visiblePopup"
@@ -93,13 +92,13 @@
     >
         <div class="activity-category">
               <van-divider contentPosition="center">活动类型</van-divider>
-              <van-grid column-num="3" :border="false">
-                <van-grid-item use-slot>
+              <van-grid  column-num="3" :border="false">
+                <van-grid-item  use-slot v-for="(item,index) in categories" :key="index" @click="filterItemClick(item,index)">
+                      <span :class="[{'active':item.active}]">{{item.name}}</span>
                 </van-grid-item>
               </van-grid>
         </div>
     </van-popup>
-    <!-- <van-button>测试</van-button> -->
     <tab-bar :tabbar="tabbar"></tab-bar>
   </div>
 </template>
@@ -110,7 +109,7 @@ import card from '@/components/card'
 import tabBar from '@/components/tabBar'
 import searchBox from '@/components/searchBox'
 import {wxLogin} from '@/api/wxApi'
-import { getToken, getActivitesByActivityTypeId, getActivityByKeywords, getAllActivityType, getBanner } from '@/api/serverApi'
+import { getToken, getActivitesByActivityTypeId, getCategoryByActivityTypeId, getAllActivityType, getBanner } from '@/api/serverApi'
 // import list from '@/components/list'
 export default {
   components: {
@@ -125,6 +124,7 @@ export default {
       visiblePopup: false,
       activityType: [],
       swiperCurrentIndex: 0,
+      categories: [],
       tabs_item_active: '按热度',
       filterItems: [
         {
@@ -139,12 +139,16 @@ export default {
       ],
       page: 1,
       size: 10,
-      id: ''
+      id: '',
+      alreadyId: -1
     }
   },
   computed: {
-    isShowIconType () {
-      return this.active !== '热门搜索'
+    filterIconColor () {
+      if (this.active !== '热门搜索') {
+        return '#00b1e2'
+      }
+      return '#fff'
     }
   },
   methods: {
@@ -160,14 +164,24 @@ export default {
       console.log('clickHandle:', ev)
       // throw {message: 'custom test'}
     },
-    iconTypeClick () {
+    async iconTypeClick () {
       console.log('iconTypeClick')
+      if (this.active === '热门搜索') {
+        return false
+      }
+      if (this.id !== this.alreadyId) {
+        this.categories = await getCategoryByActivityTypeId({activityTypeId: this.id})
+        this.categories.map(item => {
+          item.active = false
+          return item
+        })
+        this.categories.unshift({id: 0, name: '全部', active: true})
+      }
+      this._loadData()
+      this.alreadyId = this.id
       this.visiblePopup = true
     },
     async onChange (event) {
-      console.log('activityType', this.activityType)
-      console.log(event)
-      // console.log(this.active)
       this.active = event.mp.detail.name
       const {index} = event.mp.detail
       if (index === 0) {
@@ -175,14 +189,19 @@ export default {
       } else {
         this.id = this.activityType[index].id
       }
-      console.log(index)
     },
-    async tabItemChange (event) {
-      console.log(event)
-      // this.activity = await getActivityByKeywords()
-      const result = await getActivitesByActivityTypeId({id: this.id, page: this.page, size: this.size})
+    async _loadData () {
+      const result = await this.getActivityByfilter()
+      console.log(result)
       this.activity = result.data
       this.total = result.total
+    },
+    tabItemChange (event) {
+      this._loadData()
+    },
+    async getActivityByfilter () {
+      const result = await getActivitesByActivityTypeId({id: this.id, page: this.page, size: this.size})
+      return result
     },
     clickOverlay () {
       this.visiblePopup = false
@@ -195,6 +214,15 @@ export default {
     jumpSearch () {
       const url = `/pages/search/main`
       wx.navigateTo({url})
+    },
+    async filterItemClick (item, index) {
+      // console.log(item)
+      this.categories.map(item => {
+        item.active = false
+      })
+      item.active = true
+      this.$set(this.categories, index, item)
+      console.log(this.categories)
     }
   },
   onPullDownRefresh () {
@@ -204,7 +232,7 @@ export default {
     console.log('上拉加载')
     if (this.activity.length < this.total) {
       this.page++
-      const result = await getActivitesByActivityTypeId({id: this.id, page: this.page, size: this.size})
+      const result = this.getActivityByfilter()
       this.activity.push(...result.data)
     }
   },
@@ -221,13 +249,13 @@ export default {
   },
   async mounted () {
     this.activityType = await getAllActivityType()
-    this.activityType.splice(0, 0, {
+    this.activityType.unshift({
+      id: 0,
       name: '热门搜索',
       scope: 0
     })
     this.active = this.activityType[0].name
-    console.log(this.activityType)
-    this.activity = await getActivityByKeywords()
+    this._loadData()
     const result = await getBanner(1)
     this.bannerItems = result.items
     const tyResult = await getBanner(3)
@@ -306,5 +334,21 @@ export default {
 }
 .activity-category{
   padding:5rpx 10rpx;
+}
+.activity-category span{
+    color:#737a7c;
+    border:1rpx solid #737a7c;
+    width:160rpx;
+    height:60rpx;
+    border-radius:30rpx;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:22rpx;  
+}
+.activity-category span.active{
+    color:#fff;
+    background: linear-gradient(#89c99a,#00b1e2);
+    border:1rpx solid transparent;
 }
 </style>
