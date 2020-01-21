@@ -37,7 +37,7 @@
                                     <swiper-item v-for="(banneritem,i) in bannerItems" :key="i" @click="bannerItemClick(banneritem)">
                                           <img              
                                               class='slide-image' 
-                                              mode='aspectFit' 
+                                              mode='widthFix' 
                                               :src="banneritem.img.url" 
                                           />
                                     </swiper-item>   
@@ -59,7 +59,7 @@
                                     <swiper-item v-for="(banneritem,i) in tYbannerItems" :key="i" @click="bannerItemClick(banneritem)">
                                           <img              
                                               class='slide-image' 
-                                              mode='aspectFit' 
+                                              mode='widthFix' 
                                               :src="banneritem.img.url" 
                                           />
                                     </swiper-item>   
