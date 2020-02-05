@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2019-12-20 17:26:00
- * @LastEditTime : 2020-01-07 16:11:16
+ * @LastEditTime : 2020-02-03 16:57:15
  * @LastEditors  : Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \xianxiapai\src\pages\releaseActi\index.vue
@@ -265,9 +265,11 @@ export default {
         console.log(result)
         if (result.code === 201) {
           Toast.success('活动发布成功')
-          this.isLoading = false
-          this.disabled = false
+        } else {
+          Toast.fail(result.msg)
         }
+        this.isLoading = false
+        this.disabled = false
       }
     },
     itemClick (index, item) {
@@ -294,6 +296,12 @@ export default {
       const files = file.map(item => item.path)
       const result = await this.batchWxUploadFiles(files, '/activity/upload_image')
       console.log(result)
+      const index = result.findIndex(item => !item.url)
+      if (index >= 0) {
+        Toast.fail(`您上传第${index + 1}张不合法,系统将自动删除!`)
+        result.splice(index, 1)
+      }
+
       this.fileList.push(...result)
       // console.log(this.fileList)
     },
@@ -334,7 +342,12 @@ export default {
     async uploadwxImage () {
       const tempFilePaths = await this.wxChooseImage()
       const result = await this.batchWxUploadFiles(tempFilePaths, '/activity/upload_image')
-      this.tempFilePaths = result[0]['url']
+      console.log(result)
+      if (result[0]['url']) {
+        this.tempFilePaths = result[0]['url']
+      } else {
+        Toast.fail('请上传合法的图片！')
+      }
     },
     removeFile (e) {
       const {index} = e.mp.detail
@@ -347,6 +360,7 @@ export default {
           filePath: item,
           name: 'files'
         })
+        console.log(res)
         return res
       })
       )

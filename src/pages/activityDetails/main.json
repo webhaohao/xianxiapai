@@ -13,6 +13,7 @@
     "van-icon": "/static/vant/icon/index",
     "van-divider": "/static/vant/divider/index",
     "van-checkbox": "/static/vant/checkbox/index",
-    "van-checkbox-group": "/static/vant/checkbox-group/index"
+    "van-checkbox-group": "/static/vant/checkbox-group/index",
+    "van-button": "/static/vant/button/index"
   }
 }

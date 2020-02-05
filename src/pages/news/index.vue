@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2019-12-19 14:13:18
- * @LastEditTime : 2020-01-20 18:12:05
+ * @LastEditTime : 2020-01-31 17:52:19
  * @LastEditors  : Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \xianxiapai\src\pages\news\index.vue
@@ -9,9 +9,26 @@
 <!--  -->
 <template>
   <div class="news">
-        <div class="banner">
-              <img src="/static/images/news_banner.jpg">
-        </div>
+         <div class="banner">
+              <swiper
+                      class="swiper-contaner"
+                      :indicator-dots="false"
+                      :autoplay="true"
+                      :duration='1500'
+                      :circular="true"
+                      :current="swiperCurrentIndex"
+                    >
+                    <block >
+                        <swiper-item v-for="(banneritem,i) in bannerItems" :key="i" @click="bannerItemClick(banneritem)">
+                              <img              
+                                  class='slide-image' 
+                                  mode='widthFix' 
+                                  :src="banneritem.img.url" 
+                              />
+                        </swiper-item>   
+                    </block>  
+                </swiper>  
+        </div>      
         <div class="keywords-content">
               <div class="icon">
                     <img src="/static/images/_paijihua.png">
@@ -45,7 +62,7 @@
 
 <script>
 import tabBar from '@/components/tabBar'
-import { getNewsCategories, getNewsDetailByCategoryId } from '@/api/serverApi'
+import { getNewsCategories, getNewsDetailByCategoryId, getBanner } from '@/api/serverApi'
 export default {
   data () {
     return {
@@ -79,7 +96,8 @@ export default {
           active: false
         }
       ],
-      list: []
+      list: [],
+      bannerItems: []
     }
   },
 
@@ -98,6 +116,8 @@ export default {
         item.active = false
         return item
       })
+      const result = await getBanner(2)
+      this.bannerItems = result.items
       this.items = categories
       this.items.unshift({name: '全部', active: true, id: ''})
       this.getNewsDetail('')
@@ -109,6 +129,11 @@ export default {
       this.items.map(item => { item.active = false })
       item.active = true
       this.getNewsDetail(item.id)
+    },
+    bannerItemClick (item) {
+      // console.log(item)
+      const url = `/pages/newsDetail/main?id=${item.key_word}`
+      wx.navigateTo({url})
     },
     async getNewsDetail (id) {
       this.list = await getNewsDetailByCategoryId({id})

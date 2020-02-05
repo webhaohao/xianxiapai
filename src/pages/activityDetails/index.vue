@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2019-12-26 10:26:00
- * @LastEditTime : 2020-01-20 22:17:06
+ * @LastEditTime : 2020-02-02 15:36:10
  * @LastEditors  : Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \xianxiapai\src\pages\activityDetails\index.vue
@@ -9,6 +9,9 @@
 <!--  -->
 <template>
   <div class="page">
+        <div class="share">
+          <van-button icon="share" type="primary" open-type="share" color="linear-gradient(#89c99a,#00b1e2)" round />
+        </div>
         <div class="detail-banner">
               <van-image
                 width="750rpx"
@@ -227,14 +230,28 @@ export default {
       }
       this.isLoading = true
       const result = await joinActivity({activityId: this.activityItem.id})
-      if (result.code === 201) {
-        Toast.success('报名成功')
-        const {id} = this.$root.$mp.query
-        // this.activityItem = null
-        this.init(id)
-      }
       this.isLoading = false
-      console.log(result)
+      if (result.code === 201) {
+        Toast({
+          type: 'success',
+          message: '报名成功',
+          onClose: () => {
+            this.closeToast()
+          }
+        })
+      } else {
+        Toast({
+          type: 'fail',
+          message: result.msg,
+          onClose: () => {
+            this.closeToast()
+          }
+        })
+      }
+    },
+    closeToast () {
+      const {id} = this.$root.$mp.query
+      this.init(id)
     },
     checkboxChange (event) {
       this.isAgree = !this.isAgree
@@ -254,11 +271,24 @@ export default {
       console.log('sure')
       this.dialogShow = false
     }
+  },
+  // 分享效果
+  onShareAppMessage () {
+    return {
+      title: this.activityItem.title,
+      path: `pages/activityDetails/main?id=${this.$root.$mp.query.id}`
+    }
   }
 }
 </script>
 <style lang='scss' scoped>
 @import url("~mpvue-wxparse/src/wxParse.css");
+.share{
+    position: absolute;
+    right:5rpx;
+    top:5rpx;
+    z-index:20;
+}
 .page{
     padding-bottom:100rpx;
 }
