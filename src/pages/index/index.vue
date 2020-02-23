@@ -183,6 +183,7 @@ export default {
     async onChange (event) {
       this.active = event.mp.detail.name
       const {index} = event.mp.detail
+      this.page = 1
       if (index === 0) {
         this.id = ''
       } else {
@@ -196,6 +197,7 @@ export default {
       this.total = result.total
     },
     tabItemChange (event) {
+      this.page = 1
       this.tabs_item_active = event.target.name
       console.log(event)
       this._loadData()
@@ -239,9 +241,10 @@ export default {
   },
   async onReachBottom () {
     console.log('上拉加载')
+    console.log('activity', this.activity)
     if (this.activity.length < this.total) {
       this.page++
-      const result = this.getActivityByfilter()
+      const result = await this.getActivityByfilter()
       this.activity.push(...result.data)
     }
   },

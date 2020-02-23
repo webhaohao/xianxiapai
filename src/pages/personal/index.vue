@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2019-12-18 15:06:28
- * @LastEditTime : 2020-01-14 14:19:26
+ * @LastEditTime : 2020-02-05 14:22:53
  * @LastEditors  : Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \xianxiapai\src\pages\personal\index.vue
@@ -117,7 +117,9 @@ export default {
       wx.navigateTo({url: item.path})
     }
   },
-  onShow () {
+  async onShow () {
+    await this._wxGetuserInfo()
+    this.userInfo = await getWxUserInfo()
   }
 }
 </script>

@@ -97,6 +97,9 @@ export default {
         }
       ],
       list: [],
+      page: 1,
+      size: 10,
+      id: '',
       bannerItems: []
     }
   },
@@ -105,7 +108,10 @@ export default {
 
   computed: {
     holder () {
-      return 4 - (this.items.length % 4)
+      if (this.length % 4) {
+        return 4 - (this.items.length % 4)
+      }
+      return 0
     }
   },
 
@@ -128,6 +134,7 @@ export default {
     async itemClick (item) {
       this.items.map(item => { item.active = false })
       item.active = true
+      this.id = item.id
       this.getNewsDetail(item.id)
     },
     bannerItemClick (item) {
@@ -136,13 +143,22 @@ export default {
       wx.navigateTo({url})
     },
     async getNewsDetail (id) {
-      this.list = await getNewsDetailByCategoryId({id})
+      const result = await getNewsDetailByCategoryId({id, page: this.page, size: this.size})
+      this.list = result.data
     },
     newsItemClick (item, index) {
       // const { item } = event.currentTarget.dataset
       // console.log(item)
       const url = `/pages/newsDetail/main?id=${item.id}`
       wx.navigateTo({url})
+    }
+  },
+  async onReachBottom () {
+    console.log('上拉加载')
+    if (this.list.length < this.total) {
+      this.page++
+      const result = await this.getNewsDetail()
+      this.list.push(...result.data)
     }
   }
 }

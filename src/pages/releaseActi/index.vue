@@ -68,7 +68,7 @@
       </div>
       <div class="upload-container">
             <h5>活动照片</h5>
-            <van-uploader :file-list="fileList" @afterRead="afterRead" @delete="removeFile" :multiple="true" />
+            <van-uploader :file-list="fileList" @afterRead="afterRead" @delete="removeFile" :multiple="true" :max-size="1048576" @oversize="overSize" />
       </div>
       <div class="release-btn">
             <van-button color="linear-gradient(to right,#89c99a,#00b1e2)" loading-text="正在发布..." :disabled="disabled" :loading="isLoading" :block="true" @vclick="handleRelease">发布</van-button>
@@ -291,25 +291,28 @@ export default {
       // this.formData[0].fieldType = event.mp.detail
     },
     async afterRead (event) {
-      console.log(event)
       const {file} = event.mp.detail
       const files = file.map(item => item.path)
       const result = await this.batchWxUploadFiles(files, '/activity/upload_image')
-      console.log(result)
-      const index = result.findIndex(item => !item.url)
-      if (index >= 0) {
-        Toast.fail(`您上传第${index + 1}张不合法,系统将自动删除!`)
-        result.splice(index, 1)
+      const IllegalArr = []
+      result.map((item, index) => {
+        if (item.url) {
+          this.fileList.push(item)
+        } else {
+          IllegalArr.push(index + 1)
+        }
+      })
+      if (IllegalArr.length) {
+        Toast.fail(`您上传第${IllegalArr.join()}张不合法,系统将自动删除!`)
       }
-
-      this.fileList.push(...result)
-      // console.log(this.fileList)
     },
     input (event) {
       console.log('event', event)
       const index = event.mp.currentTarget.dataset.index
       this.formData[index].fieldValue = event.mp.detail
-      // this.formData[0].fieldValue = event.mp.detail
+    },
+    overSize () {
+      console.log('超出了文件限制')
     },
     onConfirm (value) {
       console.log('confirm', value)
